@@ -1,0 +1,12 @@
+name: Minigame
+version: '${project.version}'
+main: com.tanner.minigame.Minigame
+load: POSTWORLD
+api-version: '1.20'
+authors: [Tanner]
+softdepend:
+  - Multiverse-Core
+description: This is a minigame template
+commands:
+  arena:
+    description: "This is the arena command"
