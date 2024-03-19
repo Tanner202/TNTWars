@@ -1,26 +1,26 @@
-package com.tanner.minigame.instance;
+package com.tanner.tntwars.instance;
 
-import com.tanner.minigame.GameState;
-import com.tanner.minigame.Minigame;
-import com.tanner.minigame.manager.ConfigManager;
+import com.tanner.tntwars.GameState;
+import com.tanner.tntwars.TNTWars;
+import com.tanner.tntwars.manager.ConfigManager;
 import org.bukkit.ChatColor;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class Countdown extends BukkitRunnable {
 
-    private Minigame minigame;
+    private TNTWars tntWars;
     private Arena arena;
     private int countdownSeconds;
 
-    public Countdown(Minigame minigame, Arena arena) {
-        this.minigame = minigame;
+    public Countdown(TNTWars tntWars, Arena arena) {
+        this.tntWars = tntWars;
         this.arena = arena;
         this.countdownSeconds = ConfigManager.getCountdownSeconds();
     }
 
     public void start() {
         arena.setState(GameState.COUNTDOWN);
-        runTaskTimer(minigame, 0, 20);
+        runTaskTimer(tntWars, 0, 20);
     }
 
     @Override

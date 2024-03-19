@@ -1,6 +1,6 @@
-package com.tanner.minigame.command;
+package com.tanner.tntwars.command;
 
-import com.tanner.minigame.listener.GameListener;
+import com.tanner.tntwars.listener.GameListener;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.command.Command;

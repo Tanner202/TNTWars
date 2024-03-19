@@ -1,6 +1,6 @@
-package com.tanner.minigame.manager;
+package com.tanner.tntwars.manager;
 
-import com.tanner.minigame.Minigame;
+import com.tanner.tntwars.TNTWars;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -9,9 +9,9 @@ public class ConfigManager {
 
     private static FileConfiguration config;
 
-    public static void setupConfig(Minigame minigame) {
-        minigame.saveDefaultConfig();
-        ConfigManager.config = minigame.getConfig();
+    public static void setupConfig(TNTWars tntWars) {
+        tntWars.saveDefaultConfig();
+        ConfigManager.config = tntWars.getConfig();
     }
 
     public static int getRequiredPlayers() { return config.getInt("required-players"); }

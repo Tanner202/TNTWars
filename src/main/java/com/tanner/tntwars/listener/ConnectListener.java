@@ -1,9 +1,8 @@
-package com.tanner.minigame.listener;
+package com.tanner.tntwars.listener;
 
-import com.tanner.minigame.Minigame;
-import com.tanner.minigame.instance.Arena;
-import com.tanner.minigame.manager.ArenaManager;
-import com.tanner.minigame.manager.ConfigManager;
+import com.tanner.tntwars.TNTWars;
+import com.tanner.tntwars.instance.Arena;
+import com.tanner.tntwars.manager.ConfigManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -12,10 +11,10 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 public class ConnectListener implements Listener {
 
-    private Minigame minigame;
+    private TNTWars tntWars;
 
-    public ConnectListener(Minigame minigame) {
-        this.minigame = minigame;
+    public ConnectListener(TNTWars tntWars) {
+        this.tntWars = tntWars;
     }
 
     @EventHandler
@@ -28,7 +27,7 @@ public class ConnectListener implements Listener {
     public void onQuit(PlayerQuitEvent e) {
 
         Player player = e.getPlayer();
-        Arena arena = minigame.getArenaManager().getArena(player);
+        Arena arena = tntWars.getArenaManager().getArena(player);
 
         if (arena != null) {
             arena.removePlayer(player);

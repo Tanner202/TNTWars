@@ -1,9 +1,8 @@
-package com.tanner.minigame.listener;
+package com.tanner.tntwars.listener;
 
-import com.tanner.minigame.GameState;
-import com.tanner.minigame.Minigame;
-import com.tanner.minigame.instance.Arena;
-import org.bukkit.ChatColor;
+import com.tanner.tntwars.GameState;
+import com.tanner.tntwars.TNTWars;
+import com.tanner.tntwars.instance.Arena;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.EntityType;
@@ -13,15 +12,12 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
-import org.bukkit.event.vehicle.VehicleEntityCollisionEvent;
 import org.bukkit.util.Vector;
 
 public class GameListener implements Listener {
 
-    private Minigame minigame;
+    private TNTWars tntWars;
 
     private float tntLaunchPower = 2f;
     private float tntHeight = 0.5f;
@@ -30,14 +26,14 @@ public class GameListener implements Listener {
     private float playerDoubleJumpPower = 1f;
     private float forwardPower = 1f;
 
-    public GameListener(Minigame minigame) {
-        this.minigame = minigame;
+    public GameListener(TNTWars tntWars) {
+        this.tntWars = tntWars;
     }
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent e) {
         Player player = e.getPlayer();
-        Arena arena = minigame.getArenaManager().getArena(player);
+        Arena arena = tntWars.getArenaManager().getArena(player);
 
         if (arena != null && arena.getState().equals(GameState.LIVE)) {
             if (e.getAction().equals(Action.LEFT_CLICK_AIR) && player.getInventory().getItemInMainHand().getType().equals(Material.TNT)) {
@@ -56,7 +52,7 @@ public class GameListener implements Listener {
     public void onPlayerToggleFlight(PlayerToggleFlightEvent e) {
         Player player = e.getPlayer();
 
-        Arena arena = minigame.getArenaManager().getArena(player);
+        Arena arena = tntWars.getArenaManager().getArena(player);
         if (arena != null && arena.getState().equals(GameState.LIVE)) {
             e.setCancelled(true);
             Vector playerDirection = player.getLocation().getDirection();

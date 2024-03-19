@@ -1,8 +1,8 @@
-package com.tanner.minigame.instance;
+package com.tanner.tntwars.instance;
 
-import com.tanner.minigame.GameState;
-import com.tanner.minigame.Minigame;
-import com.tanner.minigame.manager.ConfigManager;
+import com.tanner.tntwars.GameState;
+import com.tanner.tntwars.TNTWars;
+import com.tanner.tntwars.manager.ConfigManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -14,7 +14,7 @@ import java.util.UUID;
 
 public class Arena {
 
-    private Minigame minigame;
+    private TNTWars tntWars;
 
     private int id;
     private Location spawn;
@@ -24,15 +24,15 @@ public class Arena {
     private Countdown countdown;
     private Game game;
 
-    public Arena(Minigame minigame,int id, Location spawn) {
-        this.minigame = minigame;
+    public Arena(TNTWars tntWars, int id, Location spawn) {
+        this.tntWars = tntWars;
 
         this.id = id;
         this.spawn = spawn;
 
         this.state = GameState.RECRUITING;
         this.players = new ArrayList<>();
-        this.countdown = new Countdown(minigame, this);
+        this.countdown = new Countdown(tntWars, this);
         this.game = new Game(this);
     }
 
@@ -51,7 +51,7 @@ public class Arena {
         sendTitle("", "");
         state = GameState.RECRUITING;
         countdown.cancel();
-        countdown = new Countdown(minigame, this);
+        countdown = new Countdown(tntWars, this);
         game = new Game(this);
     }
 

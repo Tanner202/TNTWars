@@ -1,15 +1,15 @@
-package com.tanner.minigame;
+package com.tanner.tntwars;
 
-import com.tanner.minigame.command.ArenaCommand;
-import com.tanner.minigame.command.ValueAdjustCommand;
-import com.tanner.minigame.listener.ConnectListener;
-import com.tanner.minigame.listener.GameListener;
-import com.tanner.minigame.manager.ArenaManager;
-import com.tanner.minigame.manager.ConfigManager;
+import com.tanner.tntwars.command.ArenaCommand;
+import com.tanner.tntwars.command.ValueAdjustCommand;
+import com.tanner.tntwars.listener.ConnectListener;
+import com.tanner.tntwars.listener.GameListener;
+import com.tanner.tntwars.manager.ArenaManager;
+import com.tanner.tntwars.manager.ConfigManager;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public final class Minigame extends JavaPlugin {
+public final class TNTWars extends JavaPlugin {
 
     private ArenaManager arenaManager;
 

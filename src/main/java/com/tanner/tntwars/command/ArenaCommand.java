@@ -1,8 +1,8 @@
-package com.tanner.minigame.command;
+package com.tanner.tntwars.command;
 
-import com.tanner.minigame.GameState;
-import com.tanner.minigame.Minigame;
-import com.tanner.minigame.instance.Arena;
+import com.tanner.tntwars.GameState;
+import com.tanner.tntwars.TNTWars;
+import com.tanner.tntwars.instance.Arena;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -11,10 +11,10 @@ import org.bukkit.entity.Player;
 
 public class ArenaCommand implements CommandExecutor {
 
-    private Minigame minigame;
+    private TNTWars tntWars;
 
-    public ArenaCommand(Minigame minigame) {
-        this.minigame = minigame;
+    public ArenaCommand(TNTWars tntWars) {
+        this.tntWars = tntWars;
     }
 
     @Override
@@ -25,11 +25,11 @@ public class ArenaCommand implements CommandExecutor {
 
             if (args.length == 1 && args[0].equalsIgnoreCase("list")) {
                 player.sendMessage(ChatColor.GREEN + "These are the available arenas:");
-                for (Arena arena : minigame.getArenaManager().getArenas()) {
+                for (Arena arena : tntWars.getArenaManager().getArenas()) {
                     player.sendMessage(ChatColor.GREEN + "- " + arena.getId() + " (" + arena.getState().name() + ")");
                 }
             } else if (args.length == 1 && args[0].equalsIgnoreCase("leave")) {
-                Arena arena = minigame.getArenaManager().getArena(player);
+                Arena arena = tntWars.getArenaManager().getArena(player);
                 if (arena != null) {
                     player.sendMessage(ChatColor.RED + "You left the arena.");
                     arena.removePlayer(player);
@@ -37,7 +37,7 @@ public class ArenaCommand implements CommandExecutor {
                     player.sendMessage(ChatColor.RED + "You are not in an arena.");
                 }
             } else if (args.length == 2 && args[0].equalsIgnoreCase("join")) {
-                if (minigame.getArenaManager().getArena(player) != null) {
+                if (tntWars.getArenaManager().getArena(player) != null) {
                     player.sendMessage(ChatColor.RED + "You are already playing in an arena");
                     return false;
                 }
@@ -50,8 +50,8 @@ public class ArenaCommand implements CommandExecutor {
                     return false;
                 }
 
-                if (id >= 0 && id < minigame.getArenaManager().getArenas().size()) {
-                    Arena arena = minigame.getArenaManager().getArena(id);
+                if (id >= 0 && id < tntWars.getArenaManager().getArenas().size()) {
+                    Arena arena = tntWars.getArenaManager().getArena(id);
                     if (arena.getState() == GameState.RECRUITING || arena.getState() == GameState.COUNTDOWN) {
                         player.sendMessage(ChatColor.GREEN + "You are now playing in arena " + id + ".");
                         arena.addPlayer(player);

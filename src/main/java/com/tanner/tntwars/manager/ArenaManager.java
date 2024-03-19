@@ -1,7 +1,7 @@
-package com.tanner.minigame.manager;
+package com.tanner.tntwars.manager;
 
-import com.tanner.minigame.instance.Arena;
-import com.tanner.minigame.Minigame;
+import com.tanner.tntwars.TNTWars;
+import com.tanner.tntwars.instance.Arena;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -16,15 +16,15 @@ public class ArenaManager {
 
     private FileConfiguration config;
 
-    public ArenaManager(Minigame minigame) {
-        config = minigame.getConfig();
+    public ArenaManager(TNTWars tntWars) {
+        config = tntWars.getConfig();
 
-        addArenasFromConfig(minigame);
+        addArenasFromConfig(tntWars);
     }
 
-    private void addArenasFromConfig(Minigame minigame) {
+    private void addArenasFromConfig(TNTWars TNTWars) {
         for (String arenaID : config.getConfigurationSection("arenas").getKeys(false)) {
-            arenas.add(new Arena(minigame, Integer.parseInt(arenaID), getArenaLocation(arenaID)));
+            arenas.add(new Arena(TNTWars, Integer.parseInt(arenaID), getArenaLocation(arenaID)));
         }
     }
 
