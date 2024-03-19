@@ -1,6 +1,7 @@
 package com.tanner.tntwars;
 
 import com.tanner.tntwars.command.ArenaCommand;
+import com.tanner.tntwars.command.AutoWinCommand;
 import com.tanner.tntwars.command.ValueAdjustCommand;
 import com.tanner.tntwars.listener.ConnectListener;
 import com.tanner.tntwars.listener.GameListener;
@@ -25,6 +26,7 @@ public final class TNTWars extends JavaPlugin {
 
         getCommand("arena").setExecutor(new ArenaCommand(this));
         getCommand("adjust-value").setExecutor(new ValueAdjustCommand(gameListener));
+        getCommand("autowin").setExecutor(new AutoWinCommand(this));
     }
 
     public ArenaManager getArenaManager() { return arenaManager; }
