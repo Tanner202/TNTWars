@@ -3,6 +3,7 @@ package com.tanner.tntwars.command;
 import com.tanner.tntwars.GameState;
 import com.tanner.tntwars.TNTWars;
 import com.tanner.tntwars.instance.Arena;
+import com.tanner.tntwars.team.TeamUI;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -27,6 +28,17 @@ public class ArenaCommand implements CommandExecutor {
                 player.sendMessage(ChatColor.GREEN + "These are the available arenas:");
                 for (Arena arena : tntWars.getArenaManager().getArenas()) {
                     player.sendMessage(ChatColor.GREEN + "- " + arena.getId() + " (" + arena.getState().name() + ")");
+                }
+            } else if (args.length == 1 && args[0].equalsIgnoreCase("team")) {
+                Arena arena = tntWars.getArenaManager().getArena(player);
+                if (arena != null) {
+                    if (arena.getState() != GameState.LIVE) {
+                        new TeamUI(arena, player);
+                    } else {
+                        player.sendMessage(ChatColor.RED + "You cannot use this right now.");
+                    }
+                } else {
+                    player.sendMessage(ChatColor.RED + "You are not in an arena.");
                 }
             } else if (args.length == 1 && args[0].equalsIgnoreCase("leave")) {
                 Arena arena = tntWars.getArenaManager().getArena(player);
@@ -66,6 +78,7 @@ public class ArenaCommand implements CommandExecutor {
                 player.sendMessage(ChatColor.RED + "- /arena list");
                 player.sendMessage(ChatColor.RED + "- /arena leave");
                 player.sendMessage(ChatColor.RED + "- /arena join <id>");
+                player.sendMessage(ChatColor.RED + "- /arena team");
             }
         }
 

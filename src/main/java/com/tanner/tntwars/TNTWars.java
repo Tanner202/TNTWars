@@ -5,6 +5,7 @@ import com.tanner.tntwars.command.AutoWinCommand;
 import com.tanner.tntwars.command.ValueAdjustCommand;
 import com.tanner.tntwars.listener.ConnectListener;
 import com.tanner.tntwars.listener.GameListener;
+import com.tanner.tntwars.listener.GameLobbyListener;
 import com.tanner.tntwars.manager.ArenaManager;
 import com.tanner.tntwars.manager.ConfigManager;
 import org.bukkit.Bukkit;
@@ -20,6 +21,7 @@ public final class TNTWars extends JavaPlugin {
         arenaManager = new ArenaManager(this);
 
         Bukkit.getPluginManager().registerEvents(new ConnectListener(this), this);
+        Bukkit.getPluginManager().registerEvents(new GameLobbyListener(this), this);
 
         GameListener gameListener = new GameListener(this);
         Bukkit.getPluginManager().registerEvents(gameListener, this);

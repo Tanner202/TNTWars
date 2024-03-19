@@ -22,6 +22,7 @@ public class Game {
 
         for (UUID uuid : arena.getPlayers()) {
             Player player = Bukkit.getPlayer(uuid);
+            player.closeInventory();
             player.setAllowFlight(true);
             player.setFlying(false);
         }
