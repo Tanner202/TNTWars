@@ -16,27 +16,22 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
+import org.bukkit.event.vehicle.VehicleEntityCollisionEvent;
 import org.bukkit.util.Vector;
 
 public class GameListener implements Listener {
 
     private Minigame minigame;
 
-    private float tntLaunchPower = 3f;
-    private float tntHeight = 5f;
+    private float tntLaunchPower = 2f;
+    private float tntHeight = 0.5f;
+    private int fuseTime = 45;
 
-    private float playerDoubleJumpPower = 3f;
+    private float playerDoubleJumpPower = 1f;
+    private float forwardPower = 1f;
 
     public GameListener(Minigame minigame) {
         this.minigame = minigame;
-    }
-
-    @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent e) {
-        Player player = e.getPlayer();
-
-        player.setAllowFlight(true);
-        player.setFlying(false);
     }
 
     @EventHandler
@@ -48,6 +43,7 @@ public class GameListener implements Listener {
             if (e.getAction().equals(Action.LEFT_CLICK_AIR) && player.getInventory().getItemInMainHand().getType().equals(Material.TNT)) {
                 World world = player.getWorld();
                 TNTPrimed tntPrimed = (TNTPrimed) world.spawnEntity(player.getEyeLocation(), EntityType.PRIMED_TNT);
+                tntPrimed.setFuseTicks(fuseTime);
                 Vector playerFacing = player.getEyeLocation().getDirection();
 
                 Vector heightVector = new Vector(0, tntHeight, 0);
@@ -58,16 +54,55 @@ public class GameListener implements Listener {
 
     @EventHandler
     public void onPlayerToggleFlight(PlayerToggleFlightEvent e) {
-
         Player player = e.getPlayer();
-        e.setCancelled(true);
 
         Arena arena = minigame.getArenaManager().getArena(player);
         if (arena != null && arena.getState().equals(GameState.LIVE)) {
-            Vector playerVelocity = player.getVelocity();
-            Vector doubleJumpVector = new Vector(playerVelocity.getX(), playerVelocity.getY() * playerDoubleJumpPower,
-                    playerVelocity.getZ());
+            e.setCancelled(true);
+            Vector playerDirection = player.getLocation().getDirection();
+            Vector doubleJumpVector = new Vector(playerDirection.getX() * forwardPower, playerDoubleJumpPower,
+                    playerDirection.getZ() * forwardPower);
             player.setVelocity(doubleJumpVector);
         }
+    }
+
+    public void setTntLaunchPower(float tntLaunchPower) {
+        this.tntLaunchPower = tntLaunchPower;
+    }
+
+    public void setTntHeight(float tntHeight) {
+        this.tntHeight = tntHeight;
+    }
+
+    public void setFuseTime(int fuseTime) {
+        this.fuseTime = fuseTime;
+    }
+
+    public void setPlayerDoubleJumpPower(float playerDoubleJumpPower) {
+        this.playerDoubleJumpPower = playerDoubleJumpPower;
+    }
+
+    public void setForwardPower(float forwardPower) {
+        this.forwardPower = forwardPower;
+    }
+
+    public float getTntLaunchPower() {
+        return tntLaunchPower;
+    }
+
+    public float getTntHeight() {
+        return tntHeight;
+    }
+
+    public int getFuseTime() {
+        return fuseTime;
+    }
+
+    public float getPlayerDoubleJumpPower() {
+        return playerDoubleJumpPower;
+    }
+
+    public float getForwardPower() {
+        return forwardPower;
     }
 }

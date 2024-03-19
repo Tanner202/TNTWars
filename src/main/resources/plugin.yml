@@ -10,3 +10,6 @@ description: This is a minigame template
 commands:
   arena:
     description: "This is the arena command"
+  adjust-value:
+    description: "Testing purposes"
+    permission: "tntwars.op"

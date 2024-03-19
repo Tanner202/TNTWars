@@ -1,6 +1,7 @@
 package com.tanner.minigame.instance;
 
 import com.tanner.minigame.GameState;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -22,6 +23,9 @@ public class Game {
         arena.sendMessage(ChatColor.GREEN + "Game Has Started! Your objective is to break 20 blocks in the fastest time. Good Luck");
 
         for (UUID uuid : arena.getPlayers()) {
+            Player player = Bukkit.getPlayer(uuid);
+            player.setAllowFlight(true);
+            player.setFlying(false);
             points.put(uuid, 0);
         }
     }

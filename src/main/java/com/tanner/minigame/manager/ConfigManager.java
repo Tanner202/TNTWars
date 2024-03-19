@@ -10,8 +10,8 @@ public class ConfigManager {
     private static FileConfiguration config;
 
     public static void setupConfig(Minigame minigame) {
-        ConfigManager.config = minigame.getConfig();
         minigame.saveDefaultConfig();
+        ConfigManager.config = minigame.getConfig();
     }
 
     public static int getRequiredPlayers() { return config.getInt("required-players"); }
