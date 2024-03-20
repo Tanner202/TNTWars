@@ -13,6 +13,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
+import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.util.Vector;
 
 public class GameListener implements Listener {
@@ -59,6 +60,15 @@ public class GameListener implements Listener {
             Vector doubleJumpVector = new Vector(playerDirection.getX() * forwardPower, playerDoubleJumpPower,
                     playerDirection.getZ() * forwardPower);
             player.setVelocity(doubleJumpVector);
+        }
+    }
+
+    @EventHandler
+    public void onWorldLoadEvent(WorldLoadEvent e) {
+
+        Arena arena = tntWars.getArenaManager().getArena(e.getWorld());
+        if (arena != null) {
+            arena.toggleCanJoin();
         }
     }
 

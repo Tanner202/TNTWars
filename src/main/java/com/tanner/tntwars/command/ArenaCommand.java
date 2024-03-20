@@ -65,8 +65,12 @@ public class ArenaCommand implements CommandExecutor {
                 if (id >= 0 && id < tntWars.getArenaManager().getArenas().size()) {
                     Arena arena = tntWars.getArenaManager().getArena(id);
                     if (arena.getState() == GameState.RECRUITING || arena.getState() == GameState.COUNTDOWN) {
-                        player.sendMessage(ChatColor.GREEN + "You are now playing in arena " + id + ".");
-                        arena.addPlayer(player);
+                        if (arena.canJoin()) {
+                            player.sendMessage(ChatColor.GREEN + "You are now playing in arena " + id + ".");
+                            arena.addPlayer(player);
+                        } else {
+                            player.sendMessage(ChatColor.RED + "You cannot join this arena right now. Map is still loading.");
+                        }
                     } else {
                         player.sendMessage(ChatColor.RED + "You cannot join this arena right now.");
                     }

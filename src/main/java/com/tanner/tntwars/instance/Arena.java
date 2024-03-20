@@ -5,9 +5,7 @@ import com.tanner.tntwars.GameState;
 import com.tanner.tntwars.TNTWars;
 import com.tanner.tntwars.manager.ConfigManager;
 import com.tanner.tntwars.team.Team;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -27,6 +25,7 @@ public class Arena {
     private HashMap<UUID, Team> teams;
     private Countdown countdown;
     private Game game;
+    private boolean canJoin;
 
     public Arena(TNTWars tntWars, int id, Location spawn) {
         this.tntWars = tntWars;
@@ -39,21 +38,30 @@ public class Arena {
         this.teams = new HashMap<>();
         this.countdown = new Countdown(tntWars, this);
         this.game = new Game(this);
+        canJoin = true;
     }
 
     public void start() {
         game.start();
     }
 
-    public void reset(boolean kickPlayers) {
-        if (kickPlayers) {
+    public void reset() {
+        if (state.equals(GameState.LIVE)) {
+            canJoin = false;
+
             Location loc = ConfigManager.getLobbySpawn();
             for (UUID uuid : players) {
                 Bukkit.getPlayer(uuid).teleport(loc);
             }
             players.clear();
             teams.clear();
+
+            String worldName = spawn.getWorld().getName();
+            Bukkit.unloadWorld(spawn.getWorld(), false);
+            World world = Bukkit.createWorld(new WorldCreator(worldName));
+            world.setAutoSave(false);
         }
+
         sendTitle("", "");
         state = GameState.RECRUITING;
         countdown.cancel();
@@ -101,21 +109,24 @@ public class Arena {
 
         if (state == GameState.COUNTDOWN && players.size() < ConfigManager.getRequiredPlayers()) {
             sendMessage(ChatColor.RED + "There are not enough players. Countdown stopped.");
-            reset(false);
+            reset();
             return;
         }
 
         if (state == GameState.LIVE && players.size() < ConfigManager.getRequiredPlayers()) {
             sendMessage(ChatColor.RED + "The game has ended because too many players have left.");
-            reset(false);
+            reset();
         }
     }
 
     public int getId() { return id; }
 
+    public World getWorld() { return spawn.getWorld(); }
     public GameState getState() { return state; }
     public void setState(GameState state) { this.state = state; }
     public Game getGame() { return game; }
+    public boolean canJoin() { return canJoin; }
+    public void toggleCanJoin() { this.canJoin = !this.canJoin; }
 
     public List<UUID> getPlayers() { return players;}
     public void setTeam(Player player, Team team) {

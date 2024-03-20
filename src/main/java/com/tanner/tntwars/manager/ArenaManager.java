@@ -4,6 +4,8 @@ import com.tanner.tntwars.TNTWars;
 import com.tanner.tntwars.instance.Arena;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.WorldCreator;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
@@ -24,6 +26,8 @@ public class ArenaManager {
 
     private void addArenasFromConfig(TNTWars TNTWars) {
         for (String arenaID : config.getConfigurationSection("arenas").getKeys(false)) {
+            World world = Bukkit.createWorld(new WorldCreator(config.getString("arenas." + arenaID + ".world")));
+            world.setAutoSave(false);
             arenas.add(new Arena(TNTWars, Integer.parseInt(arenaID), getArenaLocation(arenaID)));
         }
     }
@@ -52,6 +56,15 @@ public class ArenaManager {
     public Arena getArena(int id) {
         for (Arena arena : arenas) {
             if (arena.getId() == id) {
+                return arena;
+            }
+        }
+        return null;
+    }
+
+    public Arena getArena(World world) {
+        for (Arena arena : arenas) {
+            if (arena.getWorld().getName().equals(world.getName())) {
                 return arena;
             }
         }

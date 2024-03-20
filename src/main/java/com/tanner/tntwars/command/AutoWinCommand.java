@@ -26,7 +26,7 @@ public class AutoWinCommand implements CommandExecutor {
             Arena arena = tntWars.getArenaManager().getArena(player);
             if (arena != null && arena.getState().equals(GameState.LIVE)) {
                 arena.sendMessage(ChatColor.GREEN + player.getName() + " Has Won the Game! Thanks for Playing");
-                arena.reset(true);
+                arena.reset();
             }
         }
 
