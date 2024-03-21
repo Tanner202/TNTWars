@@ -61,7 +61,8 @@ public class Arena {
             Bukkit.unloadWorld(worldName, false);
             World world = Bukkit.createWorld(new WorldCreator(worldName));
             world.setAutoSave(false);
-            spawn = getSpawnLocation();
+
+            setSpawnLocation();
         }
 
         sendTitle("", "");
@@ -71,10 +72,10 @@ public class Arena {
         game = new Game(this);
     }
 
-    private Location getSpawnLocation()
+    private void setSpawnLocation()
     {
         FileConfiguration config = tntWars.getConfig();
-        return new Location(
+        spawn = new Location(
                 Bukkit.getWorld(config.getString("arenas." + id + ".world")),
                 config.getDouble("arenas." + id + ".x"),
                 config.getDouble("arenas." + id + ".y"),
@@ -166,5 +167,19 @@ public class Arena {
 
     public Team getTeam(Player player) {
         return teams.get(player.getUniqueId());
+    }
+
+    public void save() {
+        canJoin = false;
+        for (Player p : getWorld().getPlayers()) {
+            p.teleport(ConfigManager.getLobbySpawn());
+        }
+
+        String worldName = getWorld().getName();
+        Bukkit.unloadWorld(worldName, true);
+        World world = Bukkit.createWorld(new WorldCreator(worldName));
+        world.setAutoSave(false);
+
+        setSpawnLocation();
     }
 }

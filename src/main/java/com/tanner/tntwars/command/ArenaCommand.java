@@ -77,6 +77,25 @@ public class ArenaCommand implements CommandExecutor {
                 } else {
                     player.sendMessage(ChatColor.RED + "You specified an invalid arena ID.");
                 }
+            } else if (args.length == 2 && args[0].equalsIgnoreCase("save")) {
+                int id;
+                try {
+                    id = Integer.parseInt(args[1]);
+                } catch (NumberFormatException e) {
+                    player.sendMessage(ChatColor.RED + "You specified an invalid arena ID.");
+                    return false;
+                }
+
+                if (id >= 0 && id < tntWars.getArenaManager().getArenas().size()) {
+                    Arena arena = tntWars.getArenaManager().getArena(id);
+                    if (arena.getState() == GameState.RECRUITING || arena.getState() == GameState.COUNTDOWN) {
+                        arena.save();
+                    } else {
+                        player.sendMessage(ChatColor.RED + "You cannot save this arena right now.");
+                    }
+                } else {
+                    player.sendMessage(ChatColor.RED + "You specified an invalid arena ID.");
+                }
             } else {
                 player.sendMessage(ChatColor.RED + "Invalid Usage! These are the options:");
                 player.sendMessage(ChatColor.RED + "- /arena list");
