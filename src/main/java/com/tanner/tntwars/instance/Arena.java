@@ -6,6 +6,7 @@ import com.tanner.tntwars.TNTWars;
 import com.tanner.tntwars.manager.ConfigManager;
 import com.tanner.tntwars.team.Team;
 import org.bukkit.*;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -57,9 +58,10 @@ public class Arena {
             teams.clear();
 
             String worldName = spawn.getWorld().getName();
-            Bukkit.unloadWorld(spawn.getWorld(), false);
+            Bukkit.unloadWorld(worldName, false);
             World world = Bukkit.createWorld(new WorldCreator(worldName));
             world.setAutoSave(false);
+            spawn = getSpawnLocation();
         }
 
         sendTitle("", "");
@@ -67,6 +69,18 @@ public class Arena {
         countdown.cancel();
         countdown = new Countdown(tntWars, this);
         game = new Game(this);
+    }
+
+    private Location getSpawnLocation()
+    {
+        FileConfiguration config = tntWars.getConfig();
+        return new Location(
+                Bukkit.getWorld(config.getString("arenas." + id + ".world")),
+                config.getDouble("arenas." + id + ".x"),
+                config.getDouble("arenas." + id + ".y"),
+                config.getDouble("arenas." + id + ".z"),
+                (float) config.getDouble("arenas." + id + ".yaw"),
+                (float) config.getDouble("arenas." + id + ".pitch"));
     }
 
     public void sendMessage(String message) {
