@@ -1,9 +1,13 @@
 package com.tanner.tntwars.listener;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import com.tanner.tntwars.GameState;
 import com.tanner.tntwars.TNTWars;
 import com.tanner.tntwars.instance.Arena;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -17,6 +21,9 @@ import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+
 public class GameListener implements Listener {
 
     private TNTWars tntWars;
@@ -27,6 +34,8 @@ public class GameListener implements Listener {
 
     private float playerDoubleJumpPower = 1f;
     private float forwardPower = 1f;
+    private long jumpCooldown = 3;
+    private Cache<UUID, Long> doubleJumpCooldown = CacheBuilder.newBuilder().expireAfterWrite(jumpCooldown, TimeUnit.SECONDS).build();
 
     public GameListener(TNTWars tntWars) {
         this.tntWars = tntWars;
@@ -60,11 +69,27 @@ public class GameListener implements Listener {
         Arena arena = tntWars.getArenaManager().getArena(player);
         if (arena != null && arena.getState().equals(GameState.LIVE)) {
             e.setCancelled(true);
-            Vector playerDirection = player.getLocation().getDirection();
-            Vector doubleJumpVector = new Vector(playerDirection.getX() * forwardPower, playerDoubleJumpPower,
-                    playerDirection.getZ() * forwardPower);
-            player.setVelocity(doubleJumpVector);
+
+            UUID playerUniqueId = player.getUniqueId();
+            if (!doubleJumpCooldown.asMap().containsKey(playerUniqueId)) {
+                doubleJump(player);
+                doubleJumpCooldown.put(playerUniqueId, System.currentTimeMillis() + jumpCooldown * 1000);
+            } else {
+                long distance = doubleJumpCooldown.asMap().get(playerUniqueId) - System.currentTimeMillis();
+                long remainingSeconds = TimeUnit.MILLISECONDS.toSeconds(distance);
+                player.sendMessage(ChatColor.RED + "Your double jump is on cooldown for " + remainingSeconds +
+                        " more second" + (remainingSeconds == 1 ? "" : "s"));
+            }
         }
+    }
+
+    private void doubleJump(Player player) {
+        Vector playerDirection = player.getLocation().getDirection();
+        Vector doubleJumpVector = new Vector(playerDirection.getX() * forwardPower, playerDoubleJumpPower,
+                playerDirection.getZ() * forwardPower);
+        player.setVelocity(doubleJumpVector);
+
+        player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_FLAP, 1f, 1f);
     }
 
     @EventHandler
