@@ -49,7 +49,7 @@ public class GameListener implements Listener {
         ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
         if (arena != null && arena.getState().equals(GameState.LIVE)) {
             if (e.getAction().equals(Action.LEFT_CLICK_AIR) && itemInMainHand.getType().equals(Material.TNT)) {
-                player.getInventory().remove(itemInMainHand);
+                itemInMainHand.setAmount(itemInMainHand.getAmount() - 1);
 
                 World world = player.getWorld();
                 TNTPrimed tntPrimed = (TNTPrimed) world.spawnEntity(player.getEyeLocation(), EntityType.PRIMED_TNT);
