@@ -85,6 +85,7 @@ public class GameListener implements Listener {
 
         Arena arena = tntWars.getArenaManager().getArena(player);
         if (arena != null && arena.getState().equals(GameState.LIVE)) {
+            Vector preEventVelocity = player.getVelocity();
             e.setCancelled(true);
 
             UUID playerUniqueId = player.getUniqueId();
@@ -96,6 +97,7 @@ public class GameListener implements Listener {
                 long remainingSeconds = TimeUnit.MILLISECONDS.toSeconds(distance);
                 player.sendMessage(ChatColor.RED + "Your double jump is on cooldown for " + remainingSeconds +
                         " more second" + (remainingSeconds == 1 ? "" : "s"));
+                player.setVelocity(preEventVelocity);
             }
         }
     }
