@@ -5,16 +5,14 @@ import com.google.common.cache.CacheBuilder;
 import com.tanner.tntwars.GameState;
 import com.tanner.tntwars.TNTWars;
 import com.tanner.tntwars.instance.Arena;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.Sound;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.event.world.WorldLoadEvent;
@@ -31,6 +29,8 @@ public class GameListener implements Listener {
     private float tntLaunchPower = 2f;
     private float tntHeight = 0.5f;
     private int fuseTime = 45;
+
+    private float snowballExplosionPower = 1f;
 
     private float playerDoubleJumpPower = 1f;
     private float forwardPower = 1f;
@@ -58,6 +58,23 @@ public class GameListener implements Listener {
 
                 Vector heightVector = new Vector(0, tntHeight, 0);
                 tntPrimed.setVelocity(playerFacing.multiply(tntLaunchPower).add(heightVector));
+            }
+        }
+    }
+
+    @EventHandler
+    public void onProjectileHitEvent(ProjectileHitEvent e) {
+        if (e.getEntity().getShooter() instanceof Player) {
+            Player player = (Player) e.getEntity().getShooter();
+            Arena arena = tntWars.getArenaManager().getArena(player);
+            ;
+            if (arena != null && arena.getState().equals(GameState.LIVE)) {
+                if (e.getEntity().getType().equals(EntityType.SNOWBALL)) {
+                    World world = e.getEntity().getWorld();
+                    Location hitLocation = e.getHitBlock().getLocation();
+
+                    world.createExplosion(hitLocation, snowballExplosionPower, false, true);
+                }
             }
         }
     }
@@ -121,6 +138,10 @@ public class GameListener implements Listener {
         this.forwardPower = forwardPower;
     }
 
+    public void setSnowballExplosionPower(float snowballExplosionPower) {
+        this.snowballExplosionPower = snowballExplosionPower;
+    }
+
     public float getTntLaunchPower() {
         return tntLaunchPower;
     }
@@ -139,5 +160,9 @@ public class GameListener implements Listener {
 
     public float getForwardPower() {
         return forwardPower;
+    }
+
+    public float getSnowballExplosionPower() {
+        return snowballExplosionPower;
     }
 }

@@ -19,9 +19,11 @@ public class Game {
     private Arena arena;
 
     private int tntInterval = 200;
+    private int snowballInterval = 50;
 
     private HashMap<Team, Location> teamSpawns;
     private BukkitTask giveTntTask;
+    private BukkitTask giveSnowballTask;
 
     public Game(Arena arena, TNTWars tntWars) {
         this.arena = arena;
@@ -50,6 +52,7 @@ public class Game {
         }
 
         giveTntTask = Bukkit.getScheduler().runTaskTimer(tntWars, this::givePlayersTnt, 100, tntInterval);
+        giveSnowballTask = Bukkit.getScheduler().runTaskTimer(tntWars, this::givePlayersSnowball, 50, snowballInterval);
     }
 
     private Location getTeamSpawn(Team team) {
@@ -66,17 +69,33 @@ public class Game {
     }
 
     private void givePlayersTnt() {
+        ItemStack throwableTnt = new ItemStack(Material.TNT, 1);
+        String message = ChatColor.GREEN + "+1 Throwable Tnt";
+        Sound sound = Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
+
+        givePlayersItem(throwableTnt, message, sound);
+    }
+
+    private void givePlayersSnowball() {
+        ItemStack explosiveSnowball = new ItemStack(Material.SNOWBALL, 1);
+        String message = ChatColor.AQUA + "+1 Explosive Snowball";
+        Sound sound = Sound.ENTITY_ITEM_PICKUP;
+
+        givePlayersItem(explosiveSnowball, message, sound);
+    }
+
+    private void givePlayersItem(ItemStack item, String message, Sound sound) {
         for (UUID uuid : arena.getPlayers()) {
             Player player = Bukkit.getPlayer(uuid);
-            ItemStack throwableTnt = new ItemStack(Material.TNT, 1);
-            player.getInventory().addItem(throwableTnt);
+            player.getInventory().addItem(item);
 
-            player.sendMessage(ChatColor.GREEN + "+1 Throwable Tnt");
-            player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1f);
+            player.sendMessage(message);
+            player.playSound(player.getLocation(), sound, 1f, 1f);
         }
     }
 
     public void end() {
         giveTntTask.cancel();
+        giveSnowballTask.cancel();
     }
 }

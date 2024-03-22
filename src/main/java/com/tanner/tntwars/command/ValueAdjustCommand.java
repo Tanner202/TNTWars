@@ -32,6 +32,7 @@ public class ValueAdjustCommand implements CommandExecutor {
                 player.sendMessage(ChatColor.GREEN + "- Double Jump: " + gameListener.getPlayerDoubleJumpPower());
                 player.sendMessage(ChatColor.GREEN + "- Launch Power: " + gameListener.getTntLaunchPower());
                 player.sendMessage(ChatColor.GREEN + "- Tnt Height: " + gameListener.getTntHeight());
+                player.sendMessage(ChatColor.GREEN + "- Snowball Explosion Power: " + gameListener.getSnowballExplosionPower());
                 return false;
             }
 
@@ -58,6 +59,9 @@ public class ValueAdjustCommand implements CommandExecutor {
             } else if (args[0].equalsIgnoreCase("tnt-height")) {
                 gameListener.setTntHeight(value);
                 player.sendMessage(ChatColor.GREEN + "Set Tnt Height to: " + value);
+            } else if (args[0].equalsIgnoreCase("snowball-explosion-power")) {
+                    gameListener.setSnowballExplosionPower(value);
+                    player.sendMessage(ChatColor.GREEN + "Set Snowball Explosion Power to: " + value);
             } else {
                 player.sendMessage(ChatColor.RED + "You did not input a valid variable");
                 player.sendMessage(ChatColor.RED + "Here are the valid variables:");
@@ -66,6 +70,7 @@ public class ValueAdjustCommand implements CommandExecutor {
                 player.sendMessage(ChatColor.RED + "- double-jump");
                 player.sendMessage(ChatColor.RED + "- tnt-launch");
                 player.sendMessage(ChatColor.RED + "- tnt-height");
+                player.sendMessage(ChatColor.RED + "- snowball-explosion-power");
                 return false;
             }
             player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1f);
