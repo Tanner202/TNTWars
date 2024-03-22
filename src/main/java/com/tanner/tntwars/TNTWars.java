@@ -31,5 +31,10 @@ public final class TNTWars extends JavaPlugin {
         getCommand("autowin").setExecutor(new AutoWinCommand(this));
     }
 
+    @Override
+    public void onDisable() {
+        Bukkit.getScheduler().cancelTasks(this);
+    }
+
     public ArenaManager getArenaManager() { return arenaManager; }
 }

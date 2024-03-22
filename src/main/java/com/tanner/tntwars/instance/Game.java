@@ -3,11 +3,11 @@ package com.tanner.tntwars.instance;
 import com.tanner.tntwars.GameState;
 import com.tanner.tntwars.TNTWars;
 import com.tanner.tntwars.team.Team;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
+import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -18,7 +18,10 @@ public class Game {
 
     private Arena arena;
 
+    private int tntInterval = 200;
+
     private HashMap<Team, Location> teamSpawns;
+    private BukkitTask giveTntTask;
 
     public Game(Arena arena, TNTWars tntWars) {
         this.arena = arena;
@@ -45,6 +48,8 @@ public class Game {
             player.setAllowFlight(true);
             player.setFlying(false);
         }
+
+        giveTntTask = Bukkit.getScheduler().runTaskTimer(tntWars, this::givePlayersTnt, 100, tntInterval);
     }
 
     private Location getTeamSpawn(Team team) {
@@ -58,5 +63,20 @@ public class Game {
                 config.getDouble(teamSpawnPath + ".z"),
                 (float) config.getDouble(teamSpawnPath + ".yaw"),
                 (float) config.getDouble(teamSpawnPath + ".pitch"));
+    }
+
+    private void givePlayersTnt() {
+        for (UUID uuid : arena.getPlayers()) {
+            Player player = Bukkit.getPlayer(uuid);
+            ItemStack throwableTnt = new ItemStack(Material.TNT, 1);
+            player.getInventory().addItem(throwableTnt);
+
+            player.sendMessage(ChatColor.GREEN + "+1 Throwable Tnt");
+            player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1f);
+        }
+    }
+
+    public void end() {
+        giveTntTask.cancel();
     }
 }

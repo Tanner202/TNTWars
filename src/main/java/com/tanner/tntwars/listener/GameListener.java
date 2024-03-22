@@ -14,6 +14,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.event.world.WorldLoadEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 public class GameListener implements Listener {
@@ -36,8 +37,11 @@ public class GameListener implements Listener {
         Player player = e.getPlayer();
         Arena arena = tntWars.getArenaManager().getArena(player);
 
+        ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
         if (arena != null && arena.getState().equals(GameState.LIVE)) {
-            if (e.getAction().equals(Action.LEFT_CLICK_AIR) && player.getInventory().getItemInMainHand().getType().equals(Material.TNT)) {
+            if (e.getAction().equals(Action.LEFT_CLICK_AIR) && itemInMainHand.getType().equals(Material.TNT)) {
+                player.getInventory().remove(itemInMainHand);
+
                 World world = player.getWorld();
                 TNTPrimed tntPrimed = (TNTPrimed) world.spawnEntity(player.getEyeLocation(), EntityType.PRIMED_TNT);
                 tntPrimed.setFuseTicks(fuseTime);

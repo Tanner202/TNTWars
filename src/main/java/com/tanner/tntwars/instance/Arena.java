@@ -45,6 +45,7 @@ public class Arena {
 
     public void reset() {
         if (state.equals(GameState.LIVE)) {
+            game.end();
             canJoin = false;
 
             Location loc = ConfigManager.getLobbySpawn();
