@@ -3,7 +3,6 @@ package com.tanner.tntwars.manager;
 import com.tanner.tntwars.TNTWars;
 import com.tanner.tntwars.instance.Arena;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -26,20 +25,10 @@ public class ArenaManager {
 
     private void addArenasFromConfig(TNTWars TNTWars) {
         for (String arenaID : config.getConfigurationSection("arenas").getKeys(false)) {
-            World world = Bukkit.createWorld(new WorldCreator(config.getString("arenas." + arenaID + ".world")));
+            World world = Bukkit.createWorld(new WorldCreator(config.getString("arenas." + arenaID + ".lobby-spawn.world")));
             world.setAutoSave(false);
-            arenas.add(new Arena(TNTWars, Integer.parseInt(arenaID), getArenaLocation(arenaID)));
+            arenas.add(new Arena(TNTWars, Integer.parseInt(arenaID)));
         }
-    }
-
-    private Location getArenaLocation(String arenaID) {
-        return new Location(
-                Bukkit.getWorld(config.getString("arenas." + arenaID + ".world")),
-                config.getDouble("arenas." + arenaID + ".x"),
-                config.getDouble("arenas." + arenaID + ".y"),
-                config.getDouble("arenas." + arenaID + ".z"),
-                (float) config.getDouble("arenas." + arenaID + ".yaw"),
-                (float) config.getDouble("arenas." + arenaID + ".pitch"));
     }
 
     public List<Arena> getArenas() { return arenas; }

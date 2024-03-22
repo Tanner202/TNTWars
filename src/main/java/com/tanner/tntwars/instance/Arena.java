@@ -9,10 +9,7 @@ import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class Arena {
 
@@ -28,17 +25,17 @@ public class Arena {
     private Game game;
     private boolean canJoin;
 
-    public Arena(TNTWars tntWars, int id, Location spawn) {
+    public Arena(TNTWars tntWars, int id) {
         this.tntWars = tntWars;
 
         this.id = id;
-        this.spawn = spawn;
+        setSpawnLocation();
 
         this.state = GameState.RECRUITING;
         this.players = new ArrayList<>();
         this.teams = new HashMap<>();
         this.countdown = new Countdown(tntWars, this);
-        this.game = new Game(this);
+        this.game = new Game(this, tntWars);
         canJoin = true;
     }
 
@@ -69,19 +66,19 @@ public class Arena {
         state = GameState.RECRUITING;
         countdown.cancel();
         countdown = new Countdown(tntWars, this);
-        game = new Game(this);
+        game = new Game(this, tntWars);
     }
 
     private void setSpawnLocation()
     {
         FileConfiguration config = tntWars.getConfig();
         spawn = new Location(
-                Bukkit.getWorld(config.getString("arenas." + id + ".world")),
-                config.getDouble("arenas." + id + ".x"),
-                config.getDouble("arenas." + id + ".y"),
-                config.getDouble("arenas." + id + ".z"),
-                (float) config.getDouble("arenas." + id + ".yaw"),
-                (float) config.getDouble("arenas." + id + ".pitch"));
+                Bukkit.getWorld(config.getString("arenas." + id + ".lobby-spawn.world")),
+                config.getDouble("arenas." + id + ".lobby-spawn.x"),
+                config.getDouble("arenas." + id + ".lobby-spawn.y"),
+                config.getDouble("arenas." + id + ".lobby-spawn.z"),
+                (float) config.getDouble("arenas." + id + ".lobby-spawn.yaw"),
+                (float) config.getDouble("arenas." + id + ".lobby-spawn.pitch"));
     }
 
     public void sendMessage(String message) {
@@ -153,6 +150,10 @@ public class Arena {
         if (teams.containsKey(player.getUniqueId())) {
             teams.remove(player.getUniqueId());
         }
+    }
+
+    public Collection<Team> getTeams() {
+        return teams.values();
     }
 
     public int getTeamCount(Team team) {
