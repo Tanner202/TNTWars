@@ -9,7 +9,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 public class Game {
@@ -25,10 +27,13 @@ public class Game {
     private BukkitTask giveTntTask;
     private BukkitTask giveSnowballTask;
 
+    private List<UUID> remainingPlayers;
+
     public Game(Arena arena, TNTWars tntWars) {
         this.arena = arena;
         this.tntWars = tntWars;
         this.teamSpawns = new HashMap<>();
+        this.remainingPlayers = new ArrayList<>();
     }
 
     public void start() {
@@ -40,6 +45,7 @@ public class Game {
         arena.sendMessage(ChatColor.GREEN + "Game Has Started! Knock the other player off by launching TNT. Last team standing wins!");
 
         for (UUID uuid : arena.getPlayers()) {
+            remainingPlayers.add(uuid);
             Player player = Bukkit.getPlayer(uuid);
             player.closeInventory();
 
@@ -85,7 +91,7 @@ public class Game {
     }
 
     private void givePlayersItem(ItemStack item, String message, Sound sound) {
-        for (UUID uuid : arena.getPlayers()) {
+        for (UUID uuid : remainingPlayers) {
             Player player = Bukkit.getPlayer(uuid);
             player.getInventory().addItem(item);
 
@@ -97,5 +103,11 @@ public class Game {
     public void end() {
         giveTntTask.cancel();
         giveSnowballTask.cancel();
+    }
+
+    public List<UUID> getRemainingPlayers() { return remainingPlayers; }
+
+    public void removeRemainingPlayer(UUID playerUUID) {
+        remainingPlayers.remove(playerUUID);
     }
 }

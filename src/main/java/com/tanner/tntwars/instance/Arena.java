@@ -140,6 +140,7 @@ public class Arena {
     public Game getGame() { return game; }
     public boolean canJoin() { return canJoin; }
     public void toggleCanJoin() { this.canJoin = !this.canJoin; }
+    public Location getSpawn() { return spawn; }
 
     public List<UUID> getPlayers() { return players;}
     public void setTeam(Player player, Team team) {
@@ -183,5 +184,9 @@ public class Arena {
         world.setAutoSave(false);
 
         setSpawnLocation();
+    }
+
+    public boolean isPlayerPlaying(Player player) {
+        return state == GameState.LIVE && game.getRemainingPlayers().contains(player.getUniqueId());
     }
 }

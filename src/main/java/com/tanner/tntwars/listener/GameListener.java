@@ -12,8 +12,10 @@ import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.inventory.ItemStack;
@@ -47,7 +49,7 @@ public class GameListener implements Listener {
         Arena arena = tntWars.getArenaManager().getArena(player);
 
         ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
-        if (arena != null && arena.getState().equals(GameState.LIVE)) {
+        if (arena != null && arena.isPlayerPlaying(player)) {
             if (e.getAction().equals(Action.LEFT_CLICK_AIR) && itemInMainHand.getType().equals(Material.TNT)) {
                 itemInMainHand.setAmount(itemInMainHand.getAmount() - 1);
 
@@ -68,7 +70,7 @@ public class GameListener implements Listener {
             Player player = (Player) e.getEntity().getShooter();
             Arena arena = tntWars.getArenaManager().getArena(player);
             ;
-            if (arena != null && arena.getState().equals(GameState.LIVE)) {
+            if (arena != null && arena.isPlayerPlaying(player)) {
                 if (e.getEntity().getType().equals(EntityType.SNOWBALL)) {
                     World world = e.getEntity().getWorld();
                     Location hitLocation = e.getHitBlock().getLocation();
@@ -84,7 +86,7 @@ public class GameListener implements Listener {
         Player player = e.getPlayer();
 
         Arena arena = tntWars.getArenaManager().getArena(player);
-        if (arena != null && arena.getState().equals(GameState.LIVE)) {
+        if (arena != null && arena.isPlayerPlaying(player)) {
             Vector preEventVelocity = player.getVelocity();
             e.setCancelled(true);
 
@@ -117,6 +119,35 @@ public class GameListener implements Listener {
         Arena arena = tntWars.getArenaManager().getArena(e.getWorld());
         if (arena != null) {
             arena.toggleCanJoin();
+        }
+    }
+
+    @EventHandler
+    public void onPlayerMove(PlayerMoveEvent e) {
+        Player player = e.getPlayer();
+
+        Arena arena = tntWars.getArenaManager().getArena(player);
+        if (arena != null && arena.isPlayerPlaying(player)) {
+            Material blockAtPlayerLocation = e.getPlayer().getLocation().getBlock().getType();
+            if (blockAtPlayerLocation == Material.WATER) {
+                player.setHealth(0);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onPlayerDeath(PlayerDeathEvent e) {
+        Player player = e.getEntity();
+
+        Arena arena = tntWars.getArenaManager().getArena(player);
+        if (arena != null && arena.isPlayerPlaying(player)) {
+            tntWars.getServer().getScheduler().scheduleSyncDelayedTask(tntWars, () -> {
+                    if (player.isDead()) {
+                        arena.getGame().removeRemainingPlayer(player.getUniqueId());
+                        player.spigot().respawn();
+                        player.teleport(arena.getSpawn());
+                    }
+            });
         }
     }
 
