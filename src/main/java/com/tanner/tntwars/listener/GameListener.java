@@ -28,7 +28,7 @@ public class GameListener implements Listener {
 
     private TNTWars tntWars;
 
-    private float tntLaunchPower = 2f;
+    private float tntLaunchPower = 1.5f;
     private float tntHeight = 0.5f;
     private int fuseTime = 45;
 
