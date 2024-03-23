@@ -22,7 +22,7 @@ public class Game {
 
     private long winWaitTime = 100;
     private int tntInterval = 200;
-    private int snowballInterval = 50;
+    private int snowballInterval = 25;
 
     private HashMap<Team, Location> teamSpawns;
     private BukkitTask giveTntTask;
