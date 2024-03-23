@@ -17,6 +17,7 @@ public class Arena {
 
     private int id;
     private Location spawn;
+    private World world;
 
     private GameState state;
     private List<UUID> players;
@@ -30,6 +31,7 @@ public class Arena {
 
         this.id = id;
         setSpawnLocation();
+        this.world = spawn.getWorld();
 
         this.state = GameState.RECRUITING;
         this.players = new ArrayList<>();
@@ -55,12 +57,11 @@ public class Arena {
             players.clear();
             teams.clear();
 
-            String worldName = spawn.getWorld().getName();
+            String worldName = world.getName();
             Bukkit.unloadWorld(worldName, false);
-            World world = Bukkit.createWorld(new WorldCreator(worldName));
-            world.setAutoSave(false);
 
-            setSpawnLocation();
+            World worldCopy = Bukkit.createWorld(new WorldCreator(worldName));
+            worldCopy.setAutoSave(false);
         }
 
         sendTitle("", "");
@@ -134,12 +135,12 @@ public class Arena {
 
     public int getId() { return id; }
 
-    public World getWorld() { return spawn.getWorld(); }
+    public World getWorld() { return world; }
     public GameState getState() { return state; }
     public void setState(GameState state) { this.state = state; }
     public Game getGame() { return game; }
     public boolean canJoin() { return canJoin; }
-    public void toggleCanJoin() { this.canJoin = !this.canJoin; }
+    public void setCanJoin(boolean canJoin) { this.canJoin = canJoin; }
     public Location getSpawn() { return spawn; }
 
     public List<UUID> getPlayers() { return players;}
@@ -178,12 +179,10 @@ public class Arena {
             p.teleport(ConfigManager.getLobbySpawn());
         }
 
-        String worldName = getWorld().getName();
+        String worldName = world.getName();
         Bukkit.unloadWorld(worldName, true);
-        World world = Bukkit.createWorld(new WorldCreator(worldName));
-        world.setAutoSave(false);
-
-        setSpawnLocation();
+        World worldCopy = Bukkit.createWorld(new WorldCreator(worldName));
+        worldCopy.setAutoSave(false);
     }
 
     public boolean isPlayerPlaying(Player player) {

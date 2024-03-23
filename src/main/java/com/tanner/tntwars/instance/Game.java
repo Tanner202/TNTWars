@@ -20,6 +20,7 @@ public class Game {
 
     private Arena arena;
 
+    private long winWaitTime = 100;
     private int tntInterval = 200;
     private int snowballInterval = 50;
 
@@ -109,5 +110,49 @@ public class Game {
 
     public void removeRemainingPlayer(UUID playerUUID) {
         remainingPlayers.remove(playerUUID);
+
+        Team team = getWinningTeam();
+        if (team != null) {
+            arena.sendMessage(team.getDisplay() + ChatColor.GREEN + " Team has Won! Thanks for Playing!");
+            Bukkit.getScheduler().runTaskLater(tntWars, () -> arena.reset(), winWaitTime);
+        }
+    }
+
+    public void testWin() {
+        Team team = getWinningTeam();
+        if (team != null) {
+            arena.sendMessage(team.getDisplay() + ChatColor.GREEN + " Team has Won! Thanks for Playing!");
+            Bukkit.getScheduler().scheduleSyncDelayedTask(tntWars, () -> arena.reset(), winWaitTime);
+        }
+    }
+
+    private Team getWinningTeam() {
+        Team winningTeam = null;
+        for (Team team : arena.getTeams()) {
+            HashMap<Team, Integer> remainingPlayersPerTeam = getRemainingPlayersPerTeam();
+            if (remainingPlayersPerTeam.get(team) > 0) {
+                if (winningTeam == null) {
+                    winningTeam = team;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        return winningTeam;
+    }
+
+    private HashMap<Team, Integer> getRemainingPlayersPerTeam() {
+        HashMap<Team, Integer> remainingPlayersPerTeam = new HashMap<>();
+        for (Team team : arena.getTeams()) {
+            remainingPlayersPerTeam.put(team, 0);
+        }
+        for (UUID uuid : remainingPlayers) {
+            Team playerTeam = arena.getTeam(Bukkit.getPlayer(uuid));
+            Integer remainingTeamPlayers = remainingPlayersPerTeam.get(playerTeam);
+            remainingPlayersPerTeam.replace(playerTeam, remainingTeamPlayers, remainingTeamPlayers + 1);
+        }
+        return remainingPlayersPerTeam;
     }
 }

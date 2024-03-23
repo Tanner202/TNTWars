@@ -118,7 +118,7 @@ public class GameListener implements Listener {
 
         Arena arena = tntWars.getArenaManager().getArena(e.getWorld());
         if (arena != null) {
-            arena.toggleCanJoin();
+            arena.setCanJoin(true);
         }
     }
 
