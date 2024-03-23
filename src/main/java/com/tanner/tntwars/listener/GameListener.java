@@ -72,13 +72,17 @@ public class GameListener implements Listener {
         if (e.getEntity().getShooter() instanceof Player) {
             Player player = (Player) e.getEntity().getShooter();
             Arena arena = tntWars.getArenaManager().getArena(player);
-            ;
-            if (arena != null && arena.isPlayerPlaying(player)) {
-                if (e.getEntity().getType().equals(EntityType.SNOWBALL)) {
-                    World world = e.getEntity().getWorld();
-                    Location hitLocation = e.getHitBlock().getLocation();
 
-                    world.createExplosion(hitLocation, snowballExplosionPower, false, true);
+            if (arena != null && arena.isPlayerPlaying(player)) {
+                World world = e.getEntity().getWorld();
+                if (e.getEntity().getType().equals(EntityType.SNOWBALL)) {
+                    if (e.getHitBlock() != null) {
+                        Location hitLocation = e.getHitBlock().getLocation();
+                        world.createExplosion(hitLocation, snowballExplosionPower, false, true);
+                    } else if (e.getHitEntity() != null) {
+                        Location hitLocation = e.getHitEntity().getLocation();
+                        world.createExplosion(hitLocation, snowballExplosionPower, false, true);
+                    }
                 }
             }
         }
