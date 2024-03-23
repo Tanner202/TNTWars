@@ -14,6 +14,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
@@ -32,7 +33,9 @@ public class GameListener implements Listener {
     private float tntHeight = 0.5f;
     private int fuseTime = 45;
 
-    private float snowballExplosionPower = 1f;
+    private float snowballExplosionPower = 2f;
+    private float snowballLaunchPower = 1.5f;
+    private float snowballHeight = 0.25f;
 
     private float playerDoubleJumpPower = 1f;
     private float forwardPower = 1f;
@@ -76,6 +79,22 @@ public class GameListener implements Listener {
                     Location hitLocation = e.getHitBlock().getLocation();
 
                     world.createExplosion(hitLocation, snowballExplosionPower, false, true);
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onProjectileLaunchEvent(ProjectileLaunchEvent e) {
+        if (e.getEntity().getShooter() instanceof Player) {
+            Player player = (Player) e.getEntity().getShooter();
+            Arena arena = tntWars.getArenaManager().getArena(player);
+            if (arena != null && arena.isPlayerPlaying(player)) {
+                if (e.getEntity().getType().equals(EntityType.SNOWBALL)) {
+                    Vector playerFacing = player.getEyeLocation().getDirection();
+
+                    Vector heightVector = new Vector(0, snowballHeight, 0);
+                    e.getEntity().setVelocity(playerFacing.multiply(snowballLaunchPower).add(heightVector));
                 }
             }
         }
