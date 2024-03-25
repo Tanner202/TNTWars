@@ -59,6 +59,7 @@ public class Arena {
             Location loc = ConfigManager.getLobbySpawn();
             for (UUID uuid : players) {
                 Player player = Bukkit.getPlayer(uuid);
+                player.getInventory().clear();
                 player.teleport(loc);
                 removeKit(player.getUniqueId());
             }
@@ -104,6 +105,7 @@ public class Arena {
     }
 
     public void addPlayer(Player player) {
+        player.getInventory().clear();
         players.add(player.getUniqueId());
         player.teleport(spawn);
 
@@ -125,6 +127,7 @@ public class Arena {
     }
 
     public void removePlayer(Player player) {
+        player.getInventory().clear();
         players.remove(player.getUniqueId());
         player.teleport(ConfigManager.getLobbySpawn());
         player.sendTitle("", "");
