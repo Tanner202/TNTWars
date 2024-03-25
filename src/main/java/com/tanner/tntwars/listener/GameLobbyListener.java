@@ -3,6 +3,7 @@ package com.tanner.tntwars.listener;
 import com.tanner.tntwars.GameState;
 import com.tanner.tntwars.TNTWars;
 import com.tanner.tntwars.instance.Arena;
+import com.tanner.tntwars.kit.KitType;
 import com.tanner.tntwars.team.Team;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -20,7 +21,7 @@ public class GameLobbyListener implements Listener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent e) {
-        if (e.getInventory() != null && e.getCurrentItem() != null &&e.getView().getTitle().contains("Team Selection")) {
+        if (e.getInventory() != null && e.getCurrentItem() != null && e.getView().getTitle().contains("Team Selection")) {
             Team team = Team.valueOf(e.getCurrentItem().getItemMeta().getLocalizedName());
             Player player = (Player) e.getWhoClicked();
 
@@ -34,6 +35,22 @@ public class GameLobbyListener implements Listener {
                 }
             }
 
+            player.closeInventory();
+            e.setCancelled(true);
+        } else if (e.getInventory() != null && e.getCurrentItem() != null && e.getView().getTitle().contains("Kit Selection")) {
+            KitType kitType = KitType.valueOf(e.getCurrentItem().getItemMeta().getLocalizedName());
+            Player player = (Player) e.getWhoClicked();
+
+            Arena arena = tntWars.getArenaManager().getArena(player);
+            if (arena != null) {
+                KitType activated = arena.getKit(player);
+                if (activated != null && activated == kitType) {
+                    player.sendMessage(ChatColor.RED + "You already have this kit selected.");
+                } else {
+                    player.sendMessage(ChatColor.GREEN + "You have selected the " + kitType.getDisplay() + ChatColor.GREEN + " kit!");
+                    arena.setKit(player.getUniqueId(), kitType);
+                }
+            }
             player.closeInventory();
             e.setCancelled(true);
         }

@@ -1,0 +1,22 @@
+package com.tanner.tntwars.kit;
+
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+
+public enum KitType {
+    LAST_CHANCE(ChatColor.GREEN + "Last Chance", Material.EMERALD, "An upwards dash when in a sticky situation"),
+    BUILDER(ChatColor.BLUE + "Builder", Material.OAK_PLANKS, "Ability to place a limited amount of blocks");
+
+    private String display, description;
+    private Material material;
+
+    KitType(String display, Material material, String description) {
+        this.display = display;
+        this.material = material;
+        this.description = description;
+    }
+
+    public String getDisplay() { return display; }
+    public Material getMaterial() { return material; }
+    public String getDescription() { return description; }
+}

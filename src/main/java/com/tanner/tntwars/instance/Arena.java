@@ -3,6 +3,10 @@ package com.tanner.tntwars.instance;
 import com.google.common.collect.TreeMultimap;
 import com.tanner.tntwars.GameState;
 import com.tanner.tntwars.TNTWars;
+import com.tanner.tntwars.kit.Kit;
+import com.tanner.tntwars.kit.KitType;
+import com.tanner.tntwars.kit.type.BuilderKit;
+import com.tanner.tntwars.kit.type.LastChanceKit;
 import com.tanner.tntwars.manager.ConfigManager;
 import com.tanner.tntwars.team.Team;
 import org.bukkit.*;
@@ -21,6 +25,7 @@ public class Arena {
 
     private GameState state;
     private List<UUID> players;
+    private HashMap<UUID, Kit> kits;
     private HashMap<UUID, Team> teams;
     private Countdown countdown;
     private Game game;
@@ -35,6 +40,7 @@ public class Arena {
 
         this.state = GameState.RECRUITING;
         this.players = new ArrayList<>();
+        this.kits = new HashMap<>();
         this.teams = new HashMap<>();
         this.countdown = new Countdown(tntWars, this);
         this.game = new Game(this, tntWars);
@@ -52,7 +58,9 @@ public class Arena {
 
             Location loc = ConfigManager.getLobbySpawn();
             for (UUID uuid : players) {
-                Bukkit.getPlayer(uuid).teleport(loc);
+                Player player = Bukkit.getPlayer(uuid);
+                player.teleport(loc);
+                removeKit(player.getUniqueId());
             }
             players.clear();
             teams.clear();
@@ -63,7 +71,7 @@ public class Arena {
             World worldCopy = Bukkit.createWorld(new WorldCreator(worldName));
             worldCopy.setAutoSave(false);
         }
-
+        kits.clear();
         sendTitle("", "");
         state = GameState.RECRUITING;
         countdown.cancel();
@@ -99,6 +107,8 @@ public class Arena {
         players.add(player.getUniqueId());
         player.teleport(spawn);
 
+        player.sendMessage(ChatColor.GOLD + "Make sure to choose a kit before the game starts by doing /arena kit!");
+
         TreeMultimap<Integer, Team> teamCount = TreeMultimap.create();
         for (Team team : Team.values()) {
             teamCount.put(getTeamCount(team), team);
@@ -119,6 +129,7 @@ public class Arena {
         player.teleport(ConfigManager.getLobbySpawn());
         player.sendTitle("", "");
 
+        removeKit(player.getUniqueId());
         removeTeam(player);
 
         if (state == GameState.COUNTDOWN && players.size() < ConfigManager.getRequiredPlayers()) {
@@ -144,6 +155,7 @@ public class Arena {
     public Location getSpawn() { return spawn; }
 
     public List<UUID> getPlayers() { return players;}
+    public HashMap<UUID, Kit> getKits() { return kits; }
     public void setTeam(Player player, Team team) {
         removeTeam(player);
         teams.put(player.getUniqueId(), team);
@@ -187,5 +199,25 @@ public class Arena {
 
     public boolean isPlayerPlaying(Player player) {
         return state == GameState.LIVE && game.getRemainingPlayers().contains(player.getUniqueId());
+    }
+
+    public void removeKit(UUID uuid) {
+        if (kits.containsKey(uuid)) {
+            kits.get(uuid).remove();
+            kits.remove(uuid);
+        }
+    }
+
+    public void setKit(UUID uuid, KitType type) {
+        removeKit(uuid);
+        if (type == KitType.BUILDER) {
+            kits.put(uuid, new BuilderKit(tntWars, uuid));
+        } else if (type == KitType.LAST_CHANCE) {
+            kits.put(uuid, new LastChanceKit(tntWars, uuid));
+        }
+    }
+
+    public KitType getKit(Player player) {
+        return kits.containsKey(player.getUniqueId()) ? kits.get(player.getUniqueId()).getType() : null;
     }
 }
