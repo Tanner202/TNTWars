@@ -7,6 +7,7 @@ import com.tanner.tntwars.kit.Kit;
 import com.tanner.tntwars.kit.KitType;
 import com.tanner.tntwars.kit.type.BuilderKit;
 import com.tanner.tntwars.kit.type.LastChanceKit;
+import com.tanner.tntwars.kit.type.SneakyKit;
 import com.tanner.tntwars.manager.ConfigManager;
 import com.tanner.tntwars.team.Team;
 import org.bukkit.*;
@@ -220,6 +221,8 @@ public class Arena {
             kits.put(uuid, new BuilderKit(tntWars, uuid));
         } else if (type == KitType.LAST_CHANCE) {
             kits.put(uuid, new LastChanceKit(tntWars, uuid));
+        } else if (type == KitType.SNEAKY) {
+            kits.put(uuid, new SneakyKit(tntWars, uuid));
         }
     }
 
