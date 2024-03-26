@@ -12,6 +12,8 @@ import com.tanner.tntwars.team.Team;
 import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
 
@@ -108,6 +110,7 @@ public class Arena {
         player.getInventory().clear();
         players.add(player.getUniqueId());
         player.teleport(spawn);
+        giveLobbyItems(player);
 
         player.sendMessage(ChatColor.GOLD + "Make sure to choose a kit before the game starts by doing /arena kit!");
 
@@ -222,5 +225,22 @@ public class Arena {
 
     public KitType getKit(Player player) {
         return kits.containsKey(player.getUniqueId()) ? kits.get(player.getUniqueId()).getType() : null;
+    }
+
+    private void giveLobbyItems(Player player) {
+        ItemStack teamSelection = new ItemStack(Material.LEATHER_CHESTPLATE);
+        ItemMeta teamSelectionMeta = teamSelection.getItemMeta();
+        teamSelectionMeta.setDisplayName(ChatColor.GOLD + "Team Selection");
+        teamSelectionMeta.setLocalizedName("Team Selection");
+        teamSelection.setItemMeta(teamSelectionMeta);
+
+        ItemStack kitSelection = new ItemStack(Material.DIAMOND);
+        ItemMeta kitSelectionMeta = kitSelection.getItemMeta();
+        kitSelectionMeta.setDisplayName(ChatColor.BLUE + "Kit Selection");
+        kitSelectionMeta.setLocalizedName("Kit Selection");
+        kitSelection.setItemMeta(kitSelectionMeta);
+
+        player.getInventory().setItem(0, teamSelection);
+        player.getInventory().setItem(1, kitSelection);
     }
 }

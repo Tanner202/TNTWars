@@ -38,6 +38,10 @@ public class Game {
     }
 
     public void start() {
+        for (UUID uuid : arena.getPlayers()) {
+            Bukkit.getPlayer(uuid).getInventory().clear();
+        }
+
         for (Team team : arena.getTeams()) {
             teamSpawns.put(team, getTeamSpawn(team));
         }
