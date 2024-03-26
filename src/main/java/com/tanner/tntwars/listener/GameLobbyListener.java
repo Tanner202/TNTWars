@@ -75,6 +75,7 @@ public class GameLobbyListener implements Listener {
 
             player.closeInventory();
         }
+        player.updateInventory();
     }
 
     @EventHandler
