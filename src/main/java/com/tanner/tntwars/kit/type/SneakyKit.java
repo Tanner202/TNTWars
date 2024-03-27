@@ -47,6 +47,8 @@ public class SneakyKit extends Kit {
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent e) {
         Player player = e.getPlayer();
+        if (player.getUniqueId() != getKitOwnerUUID()) return;
+
         ItemStack heldItem = player.getInventory().getItemInMainHand();
         ItemMeta itemMeta = heldItem.getItemMeta();
         if (itemMeta == null) return;

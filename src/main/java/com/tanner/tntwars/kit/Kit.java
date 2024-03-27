@@ -9,18 +9,17 @@ import org.bukkit.event.Listener;
 import java.util.UUID;
 
 public abstract class Kit implements Listener {
-
     private KitType type;
-    private UUID uuid;
+    private UUID kitOwnerUUID;
 
     public Kit(TNTWars tntWars, KitType type, UUID uuid) {
         this.type = type;
-        this.uuid = uuid;
+        this.kitOwnerUUID = uuid;
 
         Bukkit.getPluginManager().registerEvents(this, tntWars);
     }
 
-    public UUID getUUID() { return uuid; }
+    public UUID getKitOwnerUUID() { return kitOwnerUUID; }
     public KitType getType() { return type; }
 
     public abstract void onStart(Player player);

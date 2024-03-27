@@ -31,15 +31,13 @@ public class DeflectorKit extends Kit {
     }
 
     @Override
-    public void onStart(Player player) {
-
-    }
+    public void onStart(Player player) { }
 
     @EventHandler
     public void onPlayerAnimation(PlayerAnimationEvent e)
     {
         Player player = e.getPlayer();
-        if (!tntWars.getArenaManager().getArena(player).getKit(player).equals(KitType.DEFLECTOR)) return;
+        if (player.getUniqueId() != getKitOwnerUUID()) return;
         if (!e.getAnimationType().equals(PlayerAnimationType.ARM_SWING)) return;
 
         Vector playerFacing = player.getEyeLocation().getDirection();

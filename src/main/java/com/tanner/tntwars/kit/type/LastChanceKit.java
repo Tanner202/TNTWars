@@ -9,12 +9,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.Vector;
 
 import java.util.UUID;
 
 public class LastChanceKit extends Kit {
-
     private float upwardPower = 2f;
 
     public LastChanceKit(TNTWars tntWars, UUID uuid) {
@@ -29,6 +27,7 @@ public class LastChanceKit extends Kit {
     @EventHandler
     public void onPlayerInteractEvent(PlayerInteractEvent e) {
         Player player = e.getPlayer();
+        if (player.getUniqueId() != getKitOwnerUUID()) return;
 
         ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
         if (itemInMainHand.getType() == Material.FIREWORK_ROCKET &&
