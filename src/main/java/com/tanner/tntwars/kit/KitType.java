@@ -6,7 +6,8 @@ import org.bukkit.Material;
 public enum KitType {
     LAST_CHANCE(ChatColor.GREEN + "Last Chance", Material.EMERALD, "An upwards dash when in a sticky situation"),
     BUILDER(ChatColor.BLUE + "Builder", Material.OAK_PLANKS, "Ability to place a limited amount of blocks"),
-    SNEAKY(ChatColor.DARK_PURPLE + "Sneaky", Material.INK_SAC, "Ability to go invisible for a short duration");
+    SNEAKY(ChatColor.DARK_PURPLE + "Sneaky", Material.INK_SAC, "Ability to go invisible for a short duration"),
+    DEFLECTOR(ChatColor.DARK_GREEN + "Deflector", Material.SHIELD, "Ability to hit tnt back at opponents");
 
     private String display, description;
     private Material material;
