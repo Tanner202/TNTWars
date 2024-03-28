@@ -23,8 +23,10 @@ public abstract class Kit implements Listener {
     public KitType getType() { return type; }
 
     public abstract void onStart(Player player);
+    public void onStop() { }
 
     public void remove() {
         HandlerList.unregisterAll(this);
+        onStop();
     }
 }
