@@ -30,6 +30,7 @@ public class GameLobbyListener implements Listener {
         Player player = (Player) e.getWhoClicked();
         Arena arena = tntWars.getArenaManager().getArena(player);
         if (arena == null) return;
+        if (!arena.getState().equals(GameState.RECRUITING) && !arena.getState().equals(GameState.COUNTDOWN)) return;
         e.setCancelled(true);
 
         if (e.getCurrentItem() != null && e.getView().getTitle().contains("Team Selection")) {
@@ -105,6 +106,7 @@ public class GameLobbyListener implements Listener {
     public void onPlayerDropItem(PlayerDropItemEvent e) {
         Arena arena = tntWars.getArenaManager().getArena(e.getPlayer());
         if (arena == null) return;
+        if (!arena.getState().equals(GameState.RECRUITING) && !arena.getState().equals(GameState.COUNTDOWN)) return;
 
         e.setCancelled(true);
     }
