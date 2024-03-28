@@ -225,6 +225,8 @@ public class Arena {
             kits.put(uuid, new DeflectorKit(tntWars, uuid));
         } else if (type == KitType.BLINDER) {
             kits.put(uuid, new BlinderKit(tntWars, uuid));
+        } else if (type == KitType.FREEZER) {
+            kits.put(uuid, new FreezerKit(tntWars, uuid));
         }
     }
 

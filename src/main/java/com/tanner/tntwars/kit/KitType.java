@@ -8,7 +8,8 @@ public enum KitType {
     BUILDER(ChatColor.BLUE + "Builder", Material.OAK_PLANKS, "Ability to place a limited amount of blocks"),
     SNEAKY(ChatColor.DARK_PURPLE + "Sneaky", Material.INK_SAC, "Ability to go invisible for a short duration"),
     DEFLECTOR(ChatColor.DARK_GREEN + "Deflector", Material.SHIELD, "Ability to hit tnt back at opponents"),
-    BLINDER(ChatColor.DARK_GRAY + "Blinder", Material.ENDER_EYE, "Ability to blind opponents");
+    BLINDER(ChatColor.DARK_GRAY + "Blinder", Material.ENDER_EYE, "Ability to blind opponents"),
+    FREEZER(ChatColor.AQUA + "Freezer", Material.ICE, "Ability to freeze opponents in place");
 
     private String display, description;
     private Material material;
