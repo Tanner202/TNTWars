@@ -88,6 +88,8 @@ public class GameLobbyListener implements Listener {
 
         if (e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
             ItemMeta itemMeta = e.getPlayer().getInventory().getItemInMainHand().getItemMeta();
+            if (itemMeta == null) return;
+
             if (itemMeta.getLocalizedName().equals("Team Selection")) {
                 e.setCancelled(true);
                 player.updateInventory();
