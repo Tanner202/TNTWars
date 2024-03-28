@@ -5,10 +5,7 @@ import com.tanner.tntwars.GameState;
 import com.tanner.tntwars.TNTWars;
 import com.tanner.tntwars.kit.Kit;
 import com.tanner.tntwars.kit.KitType;
-import com.tanner.tntwars.kit.type.BuilderKit;
-import com.tanner.tntwars.kit.type.DeflectorKit;
-import com.tanner.tntwars.kit.type.LastChanceKit;
-import com.tanner.tntwars.kit.type.SneakyKit;
+import com.tanner.tntwars.kit.type.*;
 import com.tanner.tntwars.manager.ConfigManager;
 import com.tanner.tntwars.team.Team;
 import org.bukkit.*;
@@ -226,6 +223,8 @@ public class Arena {
             kits.put(uuid, new SneakyKit(tntWars, uuid));
         } else if (type == KitType.DEFLECTOR) {
             kits.put(uuid, new DeflectorKit(tntWars, uuid));
+        } else if (type == KitType.BLINDER) {
+            kits.put(uuid, new BlinderKit(tntWars, uuid));
         }
     }
 
