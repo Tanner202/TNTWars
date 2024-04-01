@@ -32,6 +32,8 @@ public class Arena {
     private Game game;
     private boolean canJoin;
 
+    private long worldResetWaitTime = 60;
+
     public Arena(TNTWars tntWars, int id) {
         this.tntWars = tntWars;
 
@@ -67,11 +69,13 @@ public class Arena {
             players.clear();
             teams.clear();
 
-            String worldName = world.getName();
-            Bukkit.unloadWorld(worldName, false);
+            Bukkit.getScheduler().runTaskLater(tntWars, () -> {
+                String worldName = world.getName();
+                Bukkit.unloadWorld(worldName, false);
 
-            World worldCopy = Bukkit.createWorld(new WorldCreator(worldName));
-            worldCopy.setAutoSave(false);
+                World worldCopy = Bukkit.createWorld(new WorldCreator(worldName));
+                worldCopy.setAutoSave(false);
+            }, worldResetWaitTime);
         }
         kits.clear();
         sendTitle("", "");
