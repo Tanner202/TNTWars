@@ -12,6 +12,7 @@ import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
@@ -171,6 +172,20 @@ public class GameListener implements Listener {
                         player.teleport(arena.getSpawn());
                     }
             });
+        }
+    }
+
+
+    @EventHandler
+    public void onBlockPlace(BlockPlaceEvent e) {
+        Player player = e.getPlayer();
+
+        Arena arena = tntWars.getArenaManager().getArena(player);
+        if (arena != null && arena.isPlayerPlaying(player)) {
+            if (e.getBlock().getType().equals(Material.TNT)) {
+                player.sendMessage(ChatColor.RED + "You cannot place this block.");
+                e.setCancelled(true);
+            }
         }
     }
 
