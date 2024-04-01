@@ -53,7 +53,7 @@ public class GameListener implements Listener {
 
         ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
         if (arena != null && arena.isPlayerPlaying(player)) {
-            if (e.getAction().equals(Action.LEFT_CLICK_AIR) && itemInMainHand.getType().equals(Material.TNT)) {
+            if ((e.getAction().equals(Action.LEFT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_AIR)) && itemInMainHand.getType().equals(Material.TNT)) {
                 itemInMainHand.setAmount(itemInMainHand.getAmount() - 1);
 
                 World world = player.getWorld();
