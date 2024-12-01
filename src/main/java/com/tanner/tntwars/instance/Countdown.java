@@ -4,6 +4,7 @@ import com.tanner.tntwars.GameState;
 import com.tanner.tntwars.TNTWars;
 import com.tanner.tntwars.manager.ConfigManager;
 import org.bukkit.ChatColor;
+import org.bukkit.Sound;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class Countdown extends BukkitRunnable {
@@ -34,6 +35,7 @@ public class Countdown extends BukkitRunnable {
         if (countdownSeconds <= 10 || countdownSeconds % 15 == 0) {
             arena.sendMessage(ChatColor.GREEN + "Game will start in " + countdownSeconds + " second" +
                     (countdownSeconds == 1 ? "" : "s") + ".");
+            arena.playSound(Sound.BLOCK_TRIPWIRE_CLICK_ON);
         }
 
         countdownSeconds--;

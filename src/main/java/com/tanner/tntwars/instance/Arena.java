@@ -70,10 +70,9 @@ public class Arena {
             teams.clear();
 
             Bukkit.getScheduler().runTaskLater(tntWars, () -> {
-                String worldName = world.getName();
-                Bukkit.unloadWorld(worldName, false);
+                Bukkit.unloadWorld(world, false);
 
-                World worldCopy = Bukkit.createWorld(new WorldCreator(worldName));
+                World worldCopy = Bukkit.createWorld(new WorldCreator(world.getName()));
                 worldCopy.setAutoSave(false);
             }, worldResetWaitTime);
         }
@@ -106,6 +105,13 @@ public class Arena {
     public void sendTitle(String title, String subtitle) {
         for (UUID uuid : players) {
             Bukkit.getPlayer(uuid).sendTitle(title, subtitle);
+        }
+    }
+
+    public  void playSound(Sound sound) {
+        for (UUID uuid : players) {
+            Player player = Bukkit.getPlayer(uuid);
+            player.playSound(player.getLocation(), sound, 1f, 1f);
         }
     }
 
