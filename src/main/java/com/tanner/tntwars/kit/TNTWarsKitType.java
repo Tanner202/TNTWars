@@ -1,15 +1,8 @@
 package com.tanner.tntwars.kit;
 
-import com.tanner.minigames.Minigames;
 import com.tanner.minigames.kit.KitType;
-import com.tanner.tntwars.TNTWars;
-import com.tanner.tntwars.kit.type.*;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-
-import java.util.UUID;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 
 public enum TNTWarsKitType implements KitType {
     LAST_CHANCE(ChatColor.GREEN + "Last Chance", Material.EMERALD, "An upwards dash when in a sticky situation"),

@@ -10,8 +10,7 @@ import com.tanner.tntwars.TNTWars;
 import com.tanner.minigames.team.Team;
 import com.tanner.tntwars.kit.Kit;
 import com.tanner.tntwars.kit.TNTWarsKitType;
-import com.tanner.tntwars.kit.type.BlinderKit;
-import com.tanner.tntwars.kit.type.BuilderKit;
+import com.tanner.tntwars.kit.type.*;
 import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.EntityType;
@@ -59,6 +58,7 @@ public class Game implements Listener {
         this.arena = arena;
         this.tntWars = tntWars;
         this.remainingPlayers = new ArrayList<>();
+        this.playerKits = new HashMap<>();
         Bukkit.getPluginManager().registerEvents(this, tntWars);
 
         start();
@@ -92,7 +92,16 @@ public class Game implements Listener {
                 kit = new BlinderKit(tntWars, uuid);
             } else if (playerKit == TNTWarsKitType.BUILDER) {
                 kit = new BuilderKit(tntWars, uuid);
+            } else if (playerKit == TNTWarsKitType.FREEZER) {
+                kit = new FreezerKit(tntWars, uuid);
+            } else if (playerKit == TNTWarsKitType.SNEAKY) {
+                kit = new SneakyKit(tntWars, uuid);
+            } else if (playerKit == TNTWarsKitType.LAST_CHANCE) {
+                kit = new LastChanceKit(tntWars, uuid);
+            } else if (playerKit == TNTWarsKitType.DEFLECTOR) {
+                kit = new DeflectorKit(tntWars, uuid);
             }
+
 
             if (kit != null) {
                 playerKits.put(uuid, kit);
