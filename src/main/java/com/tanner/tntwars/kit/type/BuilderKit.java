@@ -2,7 +2,7 @@ package com.tanner.tntwars.kit.type;
 
 import com.tanner.tntwars.TNTWars;
 import com.tanner.tntwars.kit.Kit;
-import com.tanner.tntwars.kit.KitType;
+import com.tanner.tntwars.kit.TNTWarsKitType;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -18,12 +18,10 @@ public class BuilderKit extends Kit {
     private int giveBlockRunnableID;
 
     public BuilderKit(TNTWars tntWars, UUID uuid) {
-        super(tntWars, KitType.BUILDER, uuid);
+        super(tntWars, TNTWarsKitType.BUILDER, uuid);
         this.tntWars = tntWars;
-    }
 
-    @Override
-    public void onStart(Player player) {
+        Player player = Bukkit.getPlayer(uuid);
         player.getInventory().addItem(new ItemStack(Material.OAK_PLANKS, 10));
         giveBlockRunnableID = Bukkit.getScheduler().scheduleSyncRepeatingTask(tntWars, () -> GivePlayerBlocks(player), giveBlockDelay, giveBlockDelay);
     }

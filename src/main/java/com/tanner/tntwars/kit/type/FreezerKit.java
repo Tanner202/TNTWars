@@ -2,7 +2,7 @@ package com.tanner.tntwars.kit.type;
 
 import com.tanner.tntwars.TNTWars;
 import com.tanner.tntwars.kit.Kit;
-import com.tanner.tntwars.kit.KitType;
+import com.tanner.tntwars.kit.TNTWarsKitType;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -25,12 +25,10 @@ public class FreezerKit extends Kit {
     private int freezeDuration = 100;
 
     public FreezerKit(TNTWars tntWars, UUID uuid) {
-        super(tntWars, KitType.FREEZER, uuid);
+        super(tntWars, TNTWarsKitType.FREEZER, uuid);
         this.tntWars = tntWars;
-    }
 
-    @Override
-    public void onStart(Player player) {
+        Player player = Bukkit.getPlayer(uuid);
         player.getInventory().addItem(new ItemStack(Material.ICE, 3));
     }
 

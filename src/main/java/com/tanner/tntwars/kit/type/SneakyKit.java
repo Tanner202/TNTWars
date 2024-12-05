@@ -4,11 +4,8 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.tanner.tntwars.TNTWars;
 import com.tanner.tntwars.kit.Kit;
-import com.tanner.tntwars.kit.KitType;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
+import com.tanner.tntwars.kit.TNTWarsKitType;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -28,11 +25,9 @@ public class SneakyKit extends Kit {
     private Cache<UUID, Long> sneakCooldown = CacheBuilder.newBuilder().expireAfterWrite(sneakCooldownDuration, TimeUnit.SECONDS).build();
 
     public SneakyKit(TNTWars tntWars, UUID uuid) {
-        super(tntWars, KitType.SNEAKY, uuid);
-    }
+        super(tntWars, TNTWarsKitType.SNEAKY, uuid);
 
-    @Override
-    public void onStart(Player player) {
+        Player player = Bukkit.getPlayer(uuid);
         ItemStack sneakItem = new ItemStack(Material.INK_SAC, 1);
         ItemMeta sneakItemMeta = sneakItem.getItemMeta();
         sneakItemMeta.setLocalizedName("Sneaky");

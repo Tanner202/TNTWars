@@ -1,30 +1,55 @@
 package com.tanner.tntwars.instance;
 
-import com.tanner.tntwars.GameState;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.tanner.minigames.GameState;
+import com.tanner.minigames.Minigames;
+import com.tanner.minigames.instance.Arena;
+import com.tanner.minigames.kit.KitType;
 import com.tanner.tntwars.TNTWars;
-import com.tanner.tntwars.team.Team;
+import com.tanner.minigames.team.Team;
+import com.tanner.tntwars.kit.Kit;
+import com.tanner.tntwars.kit.TNTWarsKitType;
+import com.tanner.tntwars.kit.type.BlinderKit;
+import com.tanner.tntwars.kit.type.BuilderKit;
 import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.TNTPrimed;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.HandlerList;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerToggleFlightEvent;
+import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
-public class Game {
+public class Game implements Listener {
 
     private TNTWars tntWars;
 
     private Arena arena;
+    private HashMap<UUID, Kit> playerKits;
 
     private long winWaitTime = 100;
     private int tntInterval = 200;
     private int snowballInterval = 25;
 
-    private HashMap<Team, Location> teamSpawns;
     private BukkitTask giveTntTask;
     private BukkitTask giveSnowballTask;
 
@@ -33,34 +58,22 @@ public class Game {
     public Game(Arena arena, TNTWars tntWars) {
         this.arena = arena;
         this.tntWars = tntWars;
-        this.teamSpawns = new HashMap<>();
         this.remainingPlayers = new ArrayList<>();
+        Bukkit.getPluginManager().registerEvents(this, tntWars);
+
+        start();
     }
 
     public void start() {
-        for (UUID uuid : arena.getPlayers()) {
-            Bukkit.getPlayer(uuid).getInventory().clear();
-        }
-
-        for (Team team : arena.getTeams()) {
-            teamSpawns.put(team, getTeamSpawn(team));
-        }
-
-        arena.setState(GameState.LIVE);
         arena.sendMessage(ChatColor.GREEN + "Game Has Started! Knock the other player off by launching TNT. Last team standing wins!");
 
-        for (UUID uuid : arena.getKits().keySet()) {
-            arena.getKits().get(uuid).onStart(Bukkit.getPlayer(uuid));
-        }
+        giveKits();
 
-        for (UUID uuid : arena.getPlayers()) {
-            remainingPlayers.add(uuid);
-            Player player = Bukkit.getPlayer(uuid);
+        for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+            remainingPlayers.add(player.getUniqueId());
             player.closeInventory();
 
             Team team = arena.getTeam(player);
-            Location teamSpawnLocation = teamSpawns.get(team);
-            player.teleport(teamSpawnLocation);
 
             player.setAllowFlight(true);
             player.setFlying(false);
@@ -70,17 +83,23 @@ public class Game {
         giveSnowballTask = Bukkit.getScheduler().runTaskTimer(tntWars, this::givePlayersSnowball, 50, snowballInterval);
     }
 
-    private Location getTeamSpawn(Team team) {
-        FileConfiguration config = tntWars.getConfig();
-        String teamName = ChatColor.stripColor(team.getDisplay());
-        String teamSpawnPath = "arenas." + arena.getId() + ".team-spawns." + teamName.toLowerCase();
-        return new Location(
-                Bukkit.getWorld(config.getString(teamSpawnPath + ".world")),
-                config.getDouble( teamSpawnPath + ".x"),
-                config.getDouble(teamSpawnPath + ".y"),
-                config.getDouble(teamSpawnPath + ".z"),
-                (float) config.getDouble(teamSpawnPath + ".yaw"),
-                (float) config.getDouble(teamSpawnPath + ".pitch"));
+    private void giveKits() {
+        for (UUID uuid : arena.getKits().keySet()) {
+            HashMap<UUID, KitType> kits = arena.getKits();
+            KitType playerKit = kits.get(uuid);
+            Kit kit = null;
+            if (playerKit == TNTWarsKitType.BLINDER) {
+                kit = new BlinderKit(tntWars, uuid);
+            } else if (playerKit == TNTWarsKitType.BUILDER) {
+                kit = new BuilderKit(tntWars, uuid);
+            }
+
+            if (kit != null) {
+                playerKits.put(uuid, kit);
+            } else {
+                Bukkit.broadcastMessage(ChatColor.RED + "There was an error giving kits to players");
+            }
+        }
     }
 
     private void givePlayersTnt() {
@@ -110,8 +129,19 @@ public class Game {
     }
 
     public void end() {
+        unregisterEvents();
+
+        for (UUID uuid : playerKits.keySet()) {
+            playerKits.get(uuid).remove();
+        }
+        playerKits.clear();
+
         giveTntTask.cancel();
         giveSnowballTask.cancel();
+    }
+
+    public void unregisterEvents() {
+        HandlerList.unregisterAll(this);
     }
 
     public List<UUID> getRemainingPlayers() { return remainingPlayers; }
@@ -162,5 +192,207 @@ public class Game {
             remainingPlayersPerTeam.replace(playerTeam, remainingTeamPlayers, remainingTeamPlayers + 1);
         }
         return remainingPlayersPerTeam;
+    }
+
+    private boolean isPlayerPlaying(Player player) {
+        return (arena.getState() == GameState.LIVE && remainingPlayers.contains(player.getUniqueId()));
+    }
+
+    // ---------------- Game Events ----------------
+
+    private float tntLaunchPower = 1.5f;
+    private float tntHeight = 0.5f;
+    private int fuseTime = 45;
+
+    private float snowballExplosionPower = 2f;
+    private float snowballLaunchPower = 1.5f;
+    private float snowballHeight = 0.25f;
+
+    private float playerDoubleJumpPower = 1f;
+    private float forwardPower = 1f;
+    private long jumpCooldown = 3;
+    private Cache<UUID, Long> doubleJumpCooldown = CacheBuilder.newBuilder().expireAfterWrite(jumpCooldown, TimeUnit.SECONDS).build();
+
+
+    @EventHandler
+    public void onPlayerInteract(PlayerInteractEvent e) {
+        Player player = e.getPlayer();
+
+        ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
+        if (arena != null && isPlayerPlaying(player)) {
+            if ((e.getAction().equals(Action.LEFT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_AIR)) && itemInMainHand.getType().equals(Material.TNT)) {
+                itemInMainHand.setAmount(itemInMainHand.getAmount() - 1);
+
+                World world = player.getWorld();
+                TNTPrimed tntPrimed = (TNTPrimed) world.spawnEntity(player.getEyeLocation(), EntityType.PRIMED_TNT);
+                tntPrimed.setFuseTicks(fuseTime);
+                Vector playerFacing = player.getEyeLocation().getDirection();
+
+                Vector heightVector = new Vector(0, tntHeight, 0);
+                tntPrimed.setVelocity(playerFacing.multiply(tntLaunchPower).add(heightVector));
+            }
+        }
+    }
+
+    @EventHandler
+    public void onProjectileHitEvent(ProjectileHitEvent e) {
+        if (e.getEntity().getShooter() instanceof Player) {
+            Player player = (Player) e.getEntity().getShooter();
+
+            if (arena != null && isPlayerPlaying(player)) {
+                World world = e.getEntity().getWorld();
+                if (e.getEntity().getType().equals(EntityType.SNOWBALL)) {
+                    if (e.getHitBlock() != null) {
+                        Location hitLocation = e.getHitBlock().getLocation();
+                        world.createExplosion(hitLocation, snowballExplosionPower, false, true);
+                    } else if (e.getHitEntity() != null) {
+                        Location hitLocation = e.getHitEntity().getLocation();
+                        world.createExplosion(hitLocation, snowballExplosionPower, false, true);
+                    }
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onProjectileLaunchEvent(ProjectileLaunchEvent e) {
+        if (e.getEntity().getShooter() instanceof Player) {
+            Player player = (Player) e.getEntity().getShooter();
+            if (arena != null && isPlayerPlaying(player)) {
+                if (e.getEntity().getType().equals(EntityType.SNOWBALL)) {
+                    Vector playerFacing = player.getEyeLocation().getDirection();
+
+                    Vector heightVector = new Vector(0, snowballHeight, 0);
+                    e.getEntity().setVelocity(playerFacing.multiply(snowballLaunchPower).add(heightVector));
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onPlayerToggleFlight(PlayerToggleFlightEvent e) {
+        Player player = e.getPlayer();
+
+        if (arena != null && isPlayerPlaying(player)) {
+            Vector preEventVelocity = player.getVelocity();
+            e.setCancelled(true);
+
+            UUID playerUniqueId = player.getUniqueId();
+            if (!doubleJumpCooldown.asMap().containsKey(playerUniqueId)) {
+                doubleJump(player);
+                doubleJumpCooldown.put(playerUniqueId, System.currentTimeMillis() + jumpCooldown * 1000);
+            } else {
+                long distance = doubleJumpCooldown.asMap().get(playerUniqueId) - System.currentTimeMillis();
+                long remainingSeconds = TimeUnit.MILLISECONDS.toSeconds(distance);
+                player.sendMessage(ChatColor.RED + "Your double jump is on cooldown for " + remainingSeconds +
+                        " more second" + (remainingSeconds == 1 ? "" : "s"));
+                player.setVelocity(preEventVelocity);
+            }
+        }
+    }
+
+    private void doubleJump(Player player) {
+        Vector playerDirection = player.getLocation().getDirection();
+        Vector doubleJumpVector = new Vector(playerDirection.getX() * forwardPower, playerDoubleJumpPower,
+                playerDirection.getZ() * forwardPower);
+        player.setVelocity(doubleJumpVector);
+
+        player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_FLAP, 1f, 1f);
+    }
+
+    @EventHandler
+    public void onWorldLoadEvent(WorldLoadEvent e) {
+
+        if (arena != null) {
+            arena.setCanJoin(true);
+        }
+    }
+
+    @EventHandler
+    public void onPlayerMove(PlayerMoveEvent e) {
+        Player player = e.getPlayer();
+
+        if (arena != null && isPlayerPlaying(player)) {
+            Material blockAtPlayerLocation = e.getPlayer().getLocation().getBlock().getType();
+            if (blockAtPlayerLocation == Material.WATER) {
+                player.setHealth(0);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onPlayerDeath(PlayerDeathEvent e) {
+        Player player = e.getEntity();
+
+        if (arena != null && isPlayerPlaying(player)) {
+            tntWars.getServer().getScheduler().scheduleSyncDelayedTask(tntWars, () -> {
+                if (player.isDead()) {
+                    removeRemainingPlayer(player.getUniqueId());
+                    player.spigot().respawn();
+                    player.teleport(arena.getSpawn());
+                }
+            });
+        }
+    }
+
+
+    @EventHandler
+    public void onBlockPlace(BlockPlaceEvent e) {
+        Player player = e.getPlayer();
+
+        if (arena != null && isPlayerPlaying(player)) {
+            if (e.getBlock().getType().equals(Material.TNT)) {
+                player.sendMessage(ChatColor.RED + "You cannot place this block.");
+                e.setCancelled(true);
+            }
+        }
+    }
+
+    public void setTntLaunchPower(float tntLaunchPower) {
+        this.tntLaunchPower = tntLaunchPower;
+    }
+
+    public void setTntHeight(float tntHeight) {
+        this.tntHeight = tntHeight;
+    }
+
+    public void setFuseTime(int fuseTime) {
+        this.fuseTime = fuseTime;
+    }
+
+    public void setPlayerDoubleJumpPower(float playerDoubleJumpPower) {
+        this.playerDoubleJumpPower = playerDoubleJumpPower;
+    }
+
+    public void setForwardPower(float forwardPower) {
+        this.forwardPower = forwardPower;
+    }
+
+    public void setSnowballExplosionPower(float snowballExplosionPower) {
+        this.snowballExplosionPower = snowballExplosionPower;
+    }
+
+    public float getTntLaunchPower() {
+        return tntLaunchPower;
+    }
+
+    public float getTntHeight() {
+        return tntHeight;
+    }
+
+    public int getFuseTime() {
+        return fuseTime;
+    }
+
+    public float getPlayerDoubleJumpPower() {
+        return playerDoubleJumpPower;
+    }
+
+    public float getForwardPower() {
+        return forwardPower;
+    }
+
+    public float getSnowballExplosionPower() {
+        return snowballExplosionPower;
     }
 }

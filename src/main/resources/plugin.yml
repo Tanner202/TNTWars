@@ -4,16 +4,6 @@ main: com.tanner.tntwars.TNTWars
 load: POSTWORLD
 api-version: '1.20'
 authors: [Tanner]
-softdepend:
-  - Multiverse-Core
+depend: [Minigames]
 description: This is a minigame called TNT Wars where two teams battle by throwing TNT at each other in an attempt to 
   knock the opponents off the map. Last team standing wins!
-commands:
-  arena:
-    description: "This is the arena command"
-  adjust-value:
-    description: "Testing purposes"
-    permission: "tntwars.op"
-  autowin:
-    description: "Testing purposes"
-    permission: "tntwars.op"

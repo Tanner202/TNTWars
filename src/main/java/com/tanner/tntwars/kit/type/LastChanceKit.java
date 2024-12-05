@@ -2,7 +2,8 @@ package com.tanner.tntwars.kit.type;
 
 import com.tanner.tntwars.TNTWars;
 import com.tanner.tntwars.kit.Kit;
-import com.tanner.tntwars.kit.KitType;
+import com.tanner.tntwars.kit.TNTWarsKitType;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -16,11 +17,9 @@ public class LastChanceKit extends Kit {
     private float upwardPower = 2f;
 
     public LastChanceKit(TNTWars tntWars, UUID uuid) {
-        super(tntWars, KitType.LAST_CHANCE, uuid);
-    }
+        super(tntWars, TNTWarsKitType.LAST_CHANCE, uuid);
 
-    @Override
-    public void onStart(Player player) {
+        Player player = Bukkit.getPlayer(uuid);
         player.getInventory().addItem(new ItemStack(Material.FIREWORK_ROCKET, 1));
     }
 

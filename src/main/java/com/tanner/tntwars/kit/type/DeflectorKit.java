@@ -2,7 +2,7 @@ package com.tanner.tntwars.kit.type;
 
 import com.tanner.tntwars.TNTWars;
 import com.tanner.tntwars.kit.Kit;
-import com.tanner.tntwars.kit.KitType;
+import com.tanner.tntwars.kit.TNTWarsKitType;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -26,12 +26,9 @@ public class DeflectorKit extends Kit {
     private int reachDistance = 3;
 
     public DeflectorKit(TNTWars tntWars, UUID uuid) {
-        super(tntWars, KitType.DEFLECTOR, uuid);
+        super(tntWars, TNTWarsKitType.DEFLECTOR, uuid);
         this.tntWars = tntWars;
     }
-
-    @Override
-    public void onStart(Player player) { }
 
     @EventHandler
     public void onPlayerAnimation(PlayerAnimationEvent e)

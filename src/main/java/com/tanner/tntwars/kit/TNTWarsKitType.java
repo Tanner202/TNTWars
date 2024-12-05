@@ -1,9 +1,17 @@
 package com.tanner.tntwars.kit;
 
+import com.tanner.minigames.Minigames;
+import com.tanner.minigames.kit.KitType;
+import com.tanner.tntwars.TNTWars;
+import com.tanner.tntwars.kit.type.*;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 
-public enum KitType {
+import java.util.UUID;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+
+public enum TNTWarsKitType implements KitType {
     LAST_CHANCE(ChatColor.GREEN + "Last Chance", Material.EMERALD, "An upwards dash when in a sticky situation"),
     BUILDER(ChatColor.BLUE + "Builder", Material.OAK_PLANKS, "Ability to place a limited amount of blocks"),
     SNEAKY(ChatColor.DARK_PURPLE + "Sneaky", Material.INK_SAC, "Ability to go invisible for a short duration"),
@@ -14,7 +22,7 @@ public enum KitType {
     private String display, description;
     private Material material;
 
-    KitType(String display, Material material, String description) {
+    TNTWarsKitType(String display, Material material, String description) {
         this.display = display;
         this.material = material;
         this.description = description;
@@ -23,4 +31,5 @@ public enum KitType {
     public String getDisplay() { return display; }
     public Material getMaterial() { return material; }
     public String getDescription() { return description; }
+    public String getName() { return name(); }
 }

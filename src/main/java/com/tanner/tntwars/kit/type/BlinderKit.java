@@ -2,7 +2,8 @@ package com.tanner.tntwars.kit.type;
 
 import com.tanner.tntwars.TNTWars;
 import com.tanner.tntwars.kit.Kit;
-import com.tanner.tntwars.kit.KitType;
+import com.tanner.tntwars.kit.TNTWarsKitType;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
@@ -24,11 +25,9 @@ public class BlinderKit extends Kit {
     private int blindDuration = 100;
 
     public BlinderKit(TNTWars tntWars, UUID uuid) {
-        super(tntWars, KitType.BLINDER, uuid);
-    }
+        super(tntWars, TNTWarsKitType.BLINDER, uuid);
 
-    @Override
-    public void onStart(Player player) {
+        Player player = Bukkit.getPlayer(uuid);
         ItemStack blindPotion = new ItemStack(Material.SPLASH_POTION, 5);
         PotionMeta blindPotionMeta = (PotionMeta) blindPotion.getItemMeta();
         blindPotionMeta.setDisplayName(ChatColor.DARK_GRAY + "Blind Potion");
