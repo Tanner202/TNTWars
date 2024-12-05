@@ -25,7 +25,7 @@ public class SneakyKit extends Kit {
     private Cache<UUID, Long> sneakCooldown = CacheBuilder.newBuilder().expireAfterWrite(sneakCooldownDuration, TimeUnit.SECONDS).build();
 
     public SneakyKit(TNTWars tntWars, UUID uuid) {
-        super(tntWars, TNTWarsKitType.SNEAKY, uuid);
+        super(tntWars, uuid);
 
         Player player = Bukkit.getPlayer(uuid);
         ItemStack sneakItem = new ItemStack(Material.INK_SAC, 1);

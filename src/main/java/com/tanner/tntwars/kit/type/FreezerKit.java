@@ -25,7 +25,7 @@ public class FreezerKit extends Kit {
     private int freezeDuration = 100;
 
     public FreezerKit(TNTWars tntWars, UUID uuid) {
-        super(tntWars, TNTWarsKitType.FREEZER, uuid);
+        super(tntWars, uuid);
         this.tntWars = tntWars;
 
         Player player = Bukkit.getPlayer(uuid);

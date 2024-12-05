@@ -3,7 +3,6 @@ package com.tanner.tntwars.instance;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.tanner.minigames.GameState;
-import com.tanner.minigames.Minigames;
 import com.tanner.minigames.instance.Arena;
 import com.tanner.minigames.kit.KitType;
 import com.tanner.tntwars.TNTWars;
@@ -12,7 +11,6 @@ import com.tanner.tntwars.kit.Kit;
 import com.tanner.tntwars.kit.TNTWarsKitType;
 import com.tanner.tntwars.kit.type.*;
 import org.bukkit.*;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
@@ -152,8 +150,6 @@ public class Game implements Listener {
     public void unregisterEvents() {
         HandlerList.unregisterAll(this);
     }
-
-    public List<UUID> getRemainingPlayers() { return remainingPlayers; }
 
     public void removeRemainingPlayer(UUID playerUUID) {
         remainingPlayers.remove(playerUUID);

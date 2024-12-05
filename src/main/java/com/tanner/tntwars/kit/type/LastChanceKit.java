@@ -17,7 +17,7 @@ public class LastChanceKit extends Kit {
     private float upwardPower = 2f;
 
     public LastChanceKit(TNTWars tntWars, UUID uuid) {
-        super(tntWars, TNTWarsKitType.LAST_CHANCE, uuid);
+        super(tntWars, uuid);
 
         Player player = Bukkit.getPlayer(uuid);
         player.getInventory().addItem(new ItemStack(Material.FIREWORK_ROCKET, 1));

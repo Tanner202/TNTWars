@@ -11,15 +11,13 @@ import org.bukkit.inventory.ItemStack;
 import java.util.UUID;
 
 public class BuilderKit extends Kit {
-    private TNTWars tntWars;
 
     private int giveBlockDelay = 100;
 
     private int giveBlockRunnableID;
 
     public BuilderKit(TNTWars tntWars, UUID uuid) {
-        super(tntWars, TNTWarsKitType.BUILDER, uuid);
-        this.tntWars = tntWars;
+        super(tntWars, uuid);
 
         Player player = Bukkit.getPlayer(uuid);
         player.getInventory().addItem(new ItemStack(Material.OAK_PLANKS, 10));

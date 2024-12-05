@@ -25,7 +25,7 @@ public class BlinderKit extends Kit {
     private int blindDuration = 100;
 
     public BlinderKit(TNTWars tntWars, UUID uuid) {
-        super(tntWars, TNTWarsKitType.BLINDER, uuid);
+        super(tntWars, uuid);
 
         Player player = Bukkit.getPlayer(uuid);
         ItemStack blindPotion = new ItemStack(Material.SPLASH_POTION, 5);

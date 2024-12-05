@@ -17,8 +17,6 @@ import java.util.UUID;
 
 public class DeflectorKit extends Kit {
 
-    private TNTWars tntWars;
-
     private float tntLaunchPower = 1.5f;
     private float tntHeight = 0.5f;
     private int fuseTime = 45;
@@ -26,8 +24,7 @@ public class DeflectorKit extends Kit {
     private int reachDistance = 3;
 
     public DeflectorKit(TNTWars tntWars, UUID uuid) {
-        super(tntWars, TNTWarsKitType.DEFLECTOR, uuid);
-        this.tntWars = tntWars;
+        super(tntWars, uuid);
     }
 
     @EventHandler
