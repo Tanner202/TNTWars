@@ -11,6 +11,7 @@ import com.tanner.tntwars.kit.Kit;
 import com.tanner.tntwars.kit.TNTWarsKitType;
 import com.tanner.tntwars.kit.type.*;
 import org.bukkit.*;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
@@ -71,7 +72,7 @@ public class Game implements Listener {
             remainingPlayers.add(player.getUniqueId());
             player.closeInventory();
 
-            Team team = arena.getTeam(player);
+            teleportPlayerToTeamSpawn(player);
 
             player.setAllowFlight(true);
             player.setFlying(false);
@@ -107,6 +108,20 @@ public class Game implements Listener {
                 Bukkit.broadcastMessage(ChatColor.RED + "There was an error giving kits to players");
             }
         }
+    }
+
+    private void teleportPlayerToTeamSpawn(Player player) {
+        FileConfiguration config = tntWars.getConfig();
+
+        String teamName = arena.getTeam(player).name();
+        Location teamSpawn = new Location(
+                Bukkit.getWorld(config.getString(teamName + ".world")),
+                config.getDouble(teamName + ".x"),
+                config.getDouble(teamName + ".y"),
+                config.getDouble(teamName + ".z"),
+                (float) config.getDouble(teamName + ".yaw"),
+                (float) config.getDouble(teamName + ".pitch"));
+        player.teleport(teamSpawn);
     }
 
     private void givePlayersTnt() {
