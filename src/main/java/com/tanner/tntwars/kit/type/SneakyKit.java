@@ -2,6 +2,7 @@ package com.tanner.tntwars.kit.type;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.tanner.tntwars.Constants;
 import com.tanner.tntwars.TNTWars;
 import com.tanner.tntwars.kit.Kit;
 import com.tanner.tntwars.kit.TNTWarsKitType;
@@ -11,6 +12,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -30,7 +32,7 @@ public class SneakyKit extends Kit {
         Player player = Bukkit.getPlayer(uuid);
         ItemStack sneakItem = new ItemStack(Material.INK_SAC, 1);
         ItemMeta sneakItemMeta = sneakItem.getItemMeta();
-        sneakItemMeta.setLocalizedName("Sneaky");
+        sneakItemMeta.getPersistentDataContainer().set(Constants.SNEAK_ITEM, PersistentDataType.STRING, "Sneak_Item");
         sneakItemMeta.setDisplayName(ChatColor.DARK_PURPLE + "Sneak");
         String lore = ChatColor.GRAY + "Activate Sneak Ability";
         sneakItemMeta.setLore(Arrays.asList(lore));
@@ -48,7 +50,7 @@ public class SneakyKit extends Kit {
         ItemMeta itemMeta = heldItem.getItemMeta();
         if (itemMeta == null) return;
 
-        if (itemMeta.getLocalizedName().equalsIgnoreCase("sneaky")) {
+        if (itemMeta.getPersistentDataContainer().has(Constants.SNEAK_ITEM)) {
             if (!sneakCooldown.asMap().containsKey(player.getUniqueId())) {
                 player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, sneakDuration, 1, false, false));
                 player.getWorld().spawnParticle(Particle.SMOKE_NORMAL, player.getLocation(), 10);

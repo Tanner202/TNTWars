@@ -12,6 +12,8 @@ public final class TNTWars extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        new Constants(this);
+
         minigamesAPI = (Minigames) Bukkit.getPluginManager().getPlugin("Minigames");
         Bukkit.getPluginManager().registerEvents(new ArenaListener(this, minigamesAPI.getArena()), this);
 
