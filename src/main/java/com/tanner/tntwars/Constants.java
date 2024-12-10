@@ -6,7 +6,7 @@ public class Constants {
 
     public static NamespacedKey SNEAK_ITEM;
 
-    public Constants(TNTWars tntWars) {
+    public static void initializeConstants(TNTWars tntWars) {
         SNEAK_ITEM = new NamespacedKey(tntWars, "Sneak_Item");
     }
 
