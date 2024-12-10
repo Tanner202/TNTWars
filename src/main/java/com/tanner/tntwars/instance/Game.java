@@ -87,6 +87,7 @@ public class Game implements Listener {
             HashMap<UUID, KitType> kits = arena.getKits();
             KitType playerKit = kits.get(uuid);
             Kit kit = null;
+
             if (playerKit == TNTWarsKitType.BLINDER) {
                 kit = new BlinderKit(tntWars, uuid);
             } else if (playerKit == TNTWarsKitType.BUILDER) {
@@ -318,14 +319,6 @@ public class Game implements Listener {
         player.setVelocity(doubleJumpVector);
 
         player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_FLAP, 1f, 1f);
-    }
-
-    @EventHandler
-    public void onWorldLoadEvent(WorldLoadEvent e) {
-
-        if (arena != null) {
-            arena.setCanJoin(true);
-        }
     }
 
     @EventHandler
