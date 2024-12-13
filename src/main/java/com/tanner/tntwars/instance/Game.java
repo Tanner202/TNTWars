@@ -60,6 +60,9 @@ public class Game implements Listener {
         this.playerKits = new HashMap<>();
         Bukkit.getPluginManager().registerEvents(this, tntWars);
 
+        snowballInterval = (int) (tntWars.getConfig().getDouble("Settings.snowball_interval") * 20);
+        tntInterval = (int) (tntWars.getConfig().getDouble("Settings.tnt_interval") * 20);
+
         start();
     }
 

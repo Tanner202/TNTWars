@@ -12,3 +12,6 @@ RED:
   z: 0
   yaw: -180
   pitch: 0
+Settings:
+  snowball_cooldown: 1.5
+  tnt_cooldown: 8
