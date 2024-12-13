@@ -73,6 +73,7 @@ public class Game implements Listener {
 
         for (Player player : Bukkit.getServer().getOnlinePlayers()) {
             remainingPlayers.add(player.getUniqueId());
+            player.setInvulnerable(true);
             player.closeInventory();
 
             teleportPlayerToTeamSpawn(player);
@@ -159,6 +160,9 @@ public class Game implements Listener {
 
         for (UUID uuid : playerKits.keySet()) {
             playerKits.get(uuid).remove();
+        }
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            player.setInvulnerable(false);
         }
         playerKits.clear();
 
